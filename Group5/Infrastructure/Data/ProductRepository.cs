@@ -7,8 +7,8 @@ namespace Infrastructure.Data
     {
         private readonly List<Product> _products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Price = 10.0m },
-            new Product { Id = 2, Name = "Product 2", Price = 20.0m }
+            new Product { Id = 1, Name = "Boot", Price = 35.99m },
+            new Product { Id = 2, Name = "Shirt", Price = 19.99m }
         };
 
         public IEnumerable<Product> GetAllProducts()
