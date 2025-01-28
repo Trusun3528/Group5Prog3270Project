@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Application.Interfaces
 {
-    public interface IProductService
+    public interface IProductRepository
     {
         IEnumerable<Product> GetAllProducts();
     }
