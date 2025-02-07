@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Group5.src.domain.models; // Adjust the namespace as necessary
+using Group5.src.domain.models; 
 
 namespace Group5.src.infrastructure
 {
@@ -10,25 +10,19 @@ namespace Group5.src.infrastructure
         {
         }
 
-        public DbSet<Product> Products { get; set; } // Example entity
-        // Add other DbSet properties for your entities here
+        public DbSet<Product> Products { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Card> Cards { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Configure your entity mappings here if needed
 
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.HasKey(p => p.Id); // Explicit key configuration
-                entity.Property(p => p.ProductName)
-                    .IsRequired()
-                    .HasMaxLength(100);
-                entity.Property(p => p.Price)
-                    .HasColumnType("decimal(18,2)"); // Configures SQL decimal type
-                entity.Property(p => p.ProductDescription)
-                    .HasMaxLength(500);
-            });
         }
     }
 }
