@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    [Migration("20250207195712_FullDataBase")]
-    partial class FullDataBase
+    [Migration("20250209215853_CreateAccountMigration")]
+    partial class CreateAccountMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -25,7 +25,7 @@ namespace Group5.src.domain.models
 
 
         public ICollection<Card>? Cards { get; set; }
-        public ICollection<Cart> Carts { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Cart>? Carts { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }
