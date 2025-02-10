@@ -39,5 +39,20 @@ namespace Group5.src.api.Controllers
             await _context.SaveChangesAsync();
             return Ok(user);
         }
+
+        [HttpPost("SignInAccount")]
+        public async Task<ActionResult> SignInAccount([FromBody] SignInModel request)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid credentials.");
+            }
+
+            return Ok(new { Message = "Sign-in successful.", User = user });
+        }
     }
+
 }
