@@ -23,6 +23,27 @@ namespace Group5.src.infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Product>().HasData(
+                new Product
+                {
+                    Id = 1,
+                    ProductName = "Left Tire",
+                    Price = 119.99,
+                    ProductDescription = "Its a tire",
+                    Stock = 100,
+                    Catagory = "Car",
+                    ImageURL = "https://cool.com"
+                },
+                new Product
+                {
+                    Id = 2,
+                    ProductName = "Sink Plunger",
+                    Price = 29.99,
+                    ProductDescription = "Plunge your sink",
+                    Stock = 50,
+                    Catagory = "Kitchen",
+                    ImageURL = "https://cool.com"
+                });
         }
     }
 }
