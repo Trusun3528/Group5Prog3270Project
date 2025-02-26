@@ -53,6 +53,29 @@ namespace Group5.src.api.Controllers
 
             return Ok(new { Message = "Sign-in successful.", User = user });
         }
+
+
+        [HttpPut("EditAccount/{id}")]
+        public async Task<ActionResult> EditAccount(int id, [FromBody] User editAccount)
+        {
+            var account = await _context.Users.FindAsync(id);
+
+
+            if (account == null)
+            {
+                //returns if not found
+                return NotFound($"Account not found");
+            }
+
+            account.UserName = editAccount.UserName;
+            account.Email = editAccount.Email;
+            account.Password = editAccount.Password;
+            account.Role = editAccount.Role;
+
+            _context.Entry(account).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(account);
+        }
     }
 
 }

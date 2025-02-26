@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    [Migration("20250209215853_CreateAccountMigration")]
-    partial class CreateAccountMigration
+    [Migration("20250226155956_SeededData")]
+    partial class SeededData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,28 @@ namespace Group5.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Catagory = "Car",
+                            ImageURL = "https://cool.com",
+                            Price = 119.98999999999999,
+                            ProductDescription = "Its a tire",
+                            ProductName = "Left Tire",
+                            Stock = 100
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Catagory = "Kitchen",
+                            ImageURL = "https://cool.com",
+                            Price = 29.989999999999998,
+                            ProductDescription = "Plunge your sink",
+                            ProductName = "Sink Plunger",
+                            Stock = 50
+                        });
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.User", b =>
@@ -230,6 +252,24 @@ namespace Group5.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "acameron1391@conestogac.on.ca",
+                            Password = "password123",
+                            Role = "Admin",
+                            UserName = "Austin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "Patrick@google.com",
+                            Password = "password123",
+                            Role = "User",
+                            UserName = "Patrick"
+                        });
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>

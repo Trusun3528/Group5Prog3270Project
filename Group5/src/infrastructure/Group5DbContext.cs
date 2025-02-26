@@ -44,6 +44,24 @@ namespace Group5.src.infrastructure
                     Catagory = "Kitchen",
                     ImageURL = "https://cool.com"
                 });
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = 1,
+                    UserName = "Austin",
+                    Email = "acameron1391@conestogac.on.ca",
+                    Password = "password123",
+                    Role = "Admin"
+                },
+                new User
+                {
+                    Id = 2,
+                    UserName = "Patrick",
+                    Email = "Patrick@google.com",
+                    Password = "password123",
+                    Role = "User"
+                });
         }
     }
 }
