@@ -48,10 +48,17 @@ namespace Group5.src.api.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Invalid credentials.");
+                return Unauthorized("Invalid Sign in.");
             }
 
             return Ok(new { Message = "Sign-in successful.", User = user });
+        }
+
+        [HttpPost("SignOutAccount")]
+        public ActionResult SignOutAccount()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { Message = "Sign out done" });
         }
 
 
