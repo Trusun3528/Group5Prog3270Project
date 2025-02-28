@@ -9,6 +9,8 @@ namespace Group5.src.api.Controllers
     [Route("[controller]")]
     public class AccountController : Controller
     {
+
+
         private readonly Group5DbContext _context;
 
         public AccountController(Group5DbContext context)
@@ -24,12 +26,26 @@ namespace Group5.src.api.Controllers
         [HttpPost("CreateAccount")]
         public async Task<ActionResult> CreateAccount([FromBody] CreateUserModel request)
         {
+            var address = new Address
+            {
+                customerName = null,
+                city = null,
+                street = null,
+                state = null,
+                postalCode = null,
+                country = null
+            };
+            _context.Addresses.Add(address);
+            await _context.SaveChangesAsync();
+
+            string EncryptPass = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = new User
             {
                 UserName = request.UserName,
                 Email = request.Email,
-                Password = request.Password,
+                Password = EncryptPass,
                 Role = "Customer",
+                addressId = address.id,
                 Cards = new List<Card>(),
                 Carts = new List<Cart>(),
                 Orders = new List<Order>()
@@ -44,13 +60,20 @@ namespace Group5.src.api.Controllers
         public async Task<ActionResult> SignInAccount([FromBody] SignInModel request)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password);
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {
                 return Unauthorized("Invalid Sign in.");
             }
 
+            bool encryptPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+
+
+            if (!encryptPassword)
+            {
+                return Unauthorized("Invalid Sign in.");
+            }
             return Ok(new { Message = "Sign-in successful.", User = user });
         }
 
@@ -82,6 +105,31 @@ namespace Group5.src.api.Controllers
             _context.Entry(account).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok(account);
+        }
+
+        [HttpPut("EditAddress/{id}")]
+        public async Task<ActionResult> EditAddress(int id, [FromBody] Address editAddress)
+        {
+            var address = await _context.Addresses.FindAsync(id);
+
+
+            if (address == null)
+            {
+                //returns if not found
+                return NotFound($"Address not found");
+            }
+
+            address.customerName = editAddress.customerName;
+            address.city = editAddress.city;
+            address.street = editAddress.street;
+            address.state = editAddress.state;
+            address.postalCode = editAddress.postalCode;
+            address.country = editAddress.country;
+
+
+            _context.Entry(address).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return Ok(address);
         }
     }
 
