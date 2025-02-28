@@ -16,12 +16,14 @@ namespace Group5.src.domain.models
         public string? Email { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(60)]
         public string? Password { get; set; }
 
         [Required]
         [MaxLength(50)]
         public string? Role { get; set; }
+
+        public int addressId { get; set; }
 
 
         public ICollection<Card>? Cards { get; set; }
