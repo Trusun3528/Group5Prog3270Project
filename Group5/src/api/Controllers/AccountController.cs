@@ -2,6 +2,11 @@
 using Group5.src.domain.models;
 using Group5.src.infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Group5.src.api.Controllers
 {
@@ -13,9 +18,12 @@ namespace Group5.src.api.Controllers
 
         private readonly Group5DbContext _context;
 
+
+
         public AccountController(Group5DbContext context)
         {
             _context = context;
+
         }
 
         public IActionResult Index()
@@ -87,7 +95,26 @@ namespace Group5.src.api.Controllers
             {
                 return Unauthorized("Invalid Sign in.");
             }
-            return Ok(new { Message = "Sign-in successful.", User = user });
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("UdqytHqwif2VWb7iKp9EC4GSt0onIyPe");
+
+            //creates the token discriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email)
+
+            }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+            //returns the user, and token
+            return Ok(new { Message = "Sign-in successful.", User = user, Token = tokenString });
         }
 
         [HttpPost("SignOutAccount")]
