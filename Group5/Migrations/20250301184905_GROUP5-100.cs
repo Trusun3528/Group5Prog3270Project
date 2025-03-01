@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class Address : Migration
+    public partial class GROUP5100 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -76,7 +76,7 @@ namespace Group5.Migrations
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     CreditCardNumber = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    BillingAddress = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    CVV = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
