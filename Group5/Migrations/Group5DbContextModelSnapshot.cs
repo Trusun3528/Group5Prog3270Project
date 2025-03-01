@@ -61,10 +61,10 @@ namespace Group5.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BillingAddress")
+                    b.Property<string>("CVV")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
 
                     b.Property<string>("CreditCardNumber")
                         .IsRequired()
@@ -307,13 +307,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.User", "User")
+                    b.HasOne("Group5.src.domain.models.User", null)
                         .WithMany("Cards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.Cart", b =>

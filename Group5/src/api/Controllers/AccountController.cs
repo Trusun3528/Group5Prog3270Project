@@ -53,7 +53,20 @@ namespace Group5.src.api.Controllers
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            var Card = new Card
+            {
+                UserId = user.Id,
+                CreditCardNumber = "1234567890123456",
+                ExpirationDate = DateTime.UtcNow,
+                CVV = "123"
+            };
+
+            _context.Cards.Add(Card);
+            await _context.SaveChangesAsync();
             return Ok(user);
+
+
         }
 
         [HttpPost("SignInAccount")]
