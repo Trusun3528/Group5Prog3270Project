@@ -22,7 +22,7 @@ namespace Group5.src.api.Controllers
         }
 
 
-        
+        //adds a cart
         [HttpPost("AddCart")]
         public async Task<ActionResult<Cart>> AddCart([FromBody] Cart cart)
         {
@@ -35,7 +35,7 @@ namespace Group5.src.api.Controllers
  
         }
 
-        
+        //gets all the carts
         [HttpGet("GetCarts")]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
         {
@@ -44,7 +44,7 @@ namespace Group5.src.api.Controllers
             return Ok(carts);
         }
 
-
+        //gets one of the carts
         [HttpGet("GetCarts/{id}")]
         public async Task<ActionResult<Product>> GetCarts(int id)
         {
@@ -60,22 +60,7 @@ namespace Group5.src.api.Controllers
             return Ok(cart);
         }
 
-        //[HttpPut("EditCart/{id}")]
-        //public async Task<ActionResult> EditProduct(int id, [FromBody] Cart editedCart)
-        //{
-        //    var cart = await _context.Carts.FindAsync(id);
-
-
-        //    product.ProductName = editedCart.ProductName;
-
-        //    _context.Entry(cart).State = EntityState.Modified;
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(cart);
-        //}
-        
-
+        //Deletes a cart
         [HttpDelete("DeleteCart/{id}")]
         public async Task<ActionResult> DeleteCart(int id)
         {
@@ -93,6 +78,7 @@ namespace Group5.src.api.Controllers
             return Ok($"Cart with id {id} has been deleted");
         }
 
+        //adds a item to a cart
 
         [HttpPost("AddCartItem")]
         public async Task<ActionResult<Cart>> AddCartItem([FromBody] CartItem cartItem)
@@ -106,8 +92,9 @@ namespace Group5.src.api.Controllers
 
         }
 
+        //gets a specific item from a cart
         [HttpGet("GetCartItems/{id}")]
-        public async Task<ActionResult<IEnumerable<Cart>>> GetCartItems(int id)
+        public async Task<ActionResult<IEnumerable<CartItem>>> GetCartItems(int id)
         {
             var cartItems = await _context.CartItems
                 .Where(C => C.CartID == id)
@@ -115,9 +102,9 @@ namespace Group5.src.api.Controllers
 
             return Ok(cartItems);
         }
-
+        //Gets all the items in a cart
         [HttpGet("GetCartItems/{id}/{id2}")]
-        public async Task<ActionResult<Product>> GetCarts(int id, int id2)
+        public async Task<ActionResult<CartItem>> GetCarts(int id, int id2)
         {
 
             var cartItem = await _context.CartItems.Where(ci => ci.CartID == id && ci.Id == id2)
@@ -132,6 +119,8 @@ namespace Group5.src.api.Controllers
             return Ok(cartItem);
         }
 
+
+        //deletes a cartitem
         [HttpDelete("DeleteCartItem/{id}")]
         public async Task<ActionResult> DeleteCartItem(int id)
         {
@@ -149,6 +138,7 @@ namespace Group5.src.api.Controllers
             return Ok($"cart Item with id {id} has been deleted");
         }
 
+        //edit a cart items
         [HttpPut("EditCartItem/{id}")]
         public async Task<ActionResult> EditCartItem(int id, [FromBody] CartItem editedCartItem)
         {
