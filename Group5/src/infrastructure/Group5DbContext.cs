@@ -24,7 +24,7 @@ namespace Group5.src.infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>().HasData(
+            modelBuilder.Entity<Product>().HasData(//populating some products
                 new Product
                 {
                     Id = 1,
@@ -46,7 +46,7 @@ namespace Group5.src.infrastructure
                     ImageURL = "https://cool.com"
                 });
 
-            modelBuilder.Entity<User>().HasData(
+            modelBuilder.Entity<User>().HasData(//populating a user account and a admin account
                 new User
                 {
                     Id = 1,

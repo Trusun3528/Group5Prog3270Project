@@ -16,7 +16,7 @@ namespace Group5.src.api.Controllers
             _context = context;
         }
 
-        [HttpPut("EditAddress/{id}")]
+        [HttpPut("EditCard/{id}")]
         public async Task<ActionResult> EditCard(int id, [FromBody] Card editCard)
         {
             var card = await _context.Cards.FindAsync(id);
@@ -27,12 +27,12 @@ namespace Group5.src.api.Controllers
                 //returns if not found
                 return NotFound($"Address not found");
             }
-
+            //edits card
             card.CreditCardNumber = editCard.CreditCardNumber;
             card.ExpirationDate = editCard.ExpirationDate;
             card.CVV= editCard.CVV;
 
-
+            //save
             _context.Entry(card).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok(card);

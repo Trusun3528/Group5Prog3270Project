@@ -13,7 +13,7 @@ namespace Group5.src.domain.models
         public int ProductId { get; set; }
         [Required]
         public int Quantity { get; set; }
-        [Column(TypeName = "decimal(18,2)")]
+        [Column(TypeName = "decimal(18,2)")]//money format
         public decimal Price { get; set; }
 
         public Order? Order { get; set; }
