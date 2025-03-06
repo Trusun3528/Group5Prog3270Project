@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class GROUP5100 : Migration
+    public partial class austin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -140,7 +140,7 @@ namespace Group5.Migrations
                     CartID = table.Column<int>(type: "integer", nullable: false),
                     ProductID = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false)
+                    Price = table.Column<double>(type: "numeric(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -14,7 +14,7 @@ namespace Group5.src.domain.models
         [Required]
         public int Quantity { get; set; }
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
+        public double? Price { get; set; }
 
         public Cart? Cart { get; set; }
         public Product? Product { get; set; }
