@@ -39,7 +39,7 @@ namespace Group5.src.api.Controllers
                     _logger.LogWarning("Cart body does not match the model");
                     return BadRequest(ModelState);
                 }
-
+                //makes sure the user exists
                 var user = await _context.Users.Include(u => u.Carts).FirstOrDefaultAsync(u => u.Id == cart.UserId);
                 if (user == null)
                 {
@@ -47,7 +47,7 @@ namespace Group5.src.api.Controllers
                     return NotFound($"User with id {cart.UserId} not found");
                 }
 
-                // Ensure the Carts collection is initialized
+                // Ensure the Carts collection is there
                 if (user.Carts == null)
                 {
                     user.Carts = new List<Cart>();
