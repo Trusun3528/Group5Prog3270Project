@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//JWT Token Key to help the Project Access These Tokens
 var key = Encoding.ASCII.GetBytes("UdqytHqwif2VWb7iKp9EC4GSt0onIyPe"); 
 builder.Services.AddAuthentication(options =>
 {

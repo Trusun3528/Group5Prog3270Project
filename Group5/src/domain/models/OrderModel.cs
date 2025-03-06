@@ -17,11 +17,13 @@ namespace Group5.src.domain.models
         [Key]
         public int Id { get; set; }
         [Required]
-        public int UserId { get; set; } 
+        public int? UserId { get; set; }
+        public string? GuestEmail { get; set; }
         [Required]
         public DateTime OrderDate { get; set; }
         [Column(TypeName = "decimal(18,2)")]//money format
         public decimal TotalAmount { get; set; }
+        public decimal DiscountApplied { get; set; }
         [MaxLength(100)]
         public string? ShippingAddress { get; set; }
 

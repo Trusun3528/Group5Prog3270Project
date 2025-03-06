@@ -28,13 +28,15 @@ namespace Group5.src.api.Controllers
 
         private readonly IConfiguration _config;
         private readonly Group5DbContext _context;
+        private readonly ILogger<AccountController> _logger;
 
 
 
-        public AccountController(Group5DbContext context, IConfiguration config)
+        public AccountController(Group5DbContext context, IConfiguration config, ILogger<AccountController> logger)
         {
             _context = context;
             _config = config;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -44,7 +46,12 @@ namespace Group5.src.api.Controllers
 
         [HttpPost("CreateAccount")]
         public async Task<ActionResult> CreateAccount([FromBody] CreateUserModel request)
-        {//Creates the address for the new account
+        {
+
+            _logger.LogInformation("Properly recieved request to create an account for" + request.Email);
+
+        
+            //Creates the address for the new account
             var address = new Address
             {
                 customerName = null,
@@ -83,7 +90,9 @@ namespace Group5.src.api.Controllers
 
             _context.Cards.Add(Card);
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Account was created succesfully for the wanted email" + request.Email);
             return Ok(user);
+                
 
 
         }
@@ -96,15 +105,16 @@ namespace Group5.src.api.Controllers
 
             if (user == null)
             {
-                return Unauthorized("Invalid Sign in.");
+                return Unauthorized("Invalid Sign in. Error 401: Please Enter Data in the User Text Box");
             }
             //encryps the password for verification
             bool encryptPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
 
 
+
             if (!encryptPassword)
             {
-                return Unauthorized("Invalid Sign in.");
+                return Unauthorized("Invalid Sign in. Error 401: Please Enter Correct Data in the Password Text Box");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -145,7 +155,7 @@ namespace Group5.src.api.Controllers
             if (account == null)
             {
                 //returns if not found
-                return NotFound($"Account not found");
+                return NotFound($"Error 404: Account not found");
             }
             //edits the account
             account.UserName = editAccount.UserName;
@@ -164,11 +174,10 @@ namespace Group5.src.api.Controllers
         {
             var address = await _context.Addresses.FindAsync(id);
 
-
             if (address == null)
             {
                 //returns if not found
-                return NotFound($"Address not found");
+                return NotFound($"Error 404: Address not found");
             }
             //edits the address
             address.customerName = editAddress.customerName;
@@ -188,9 +197,10 @@ namespace Group5.src.api.Controllers
         [HttpGet("AllUsers")]
         public async Task<ActionResult> AllUsers()
         {
-
+            //lists all the users if you would like with the Id, Email and UserName
             var users = await _context.Users.Select(u => new { u.Id, u.Email, u.UserName }).ToListAsync();
 
+            //returns the users from the command above
             return Ok(users);
         }
 
