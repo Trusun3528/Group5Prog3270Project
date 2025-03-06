@@ -11,16 +11,19 @@ namespace Group5.src.api.Controllers
     public class CardController : Controller
     {
         private readonly Group5DbContext _context;
+        private readonly ILogger<ProductController> _logger;
 
-        public CardController(Group5DbContext context)
+        public CardController(Group5DbContext context, ILogger<ProductController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [Authorize]
         [HttpPut("EditCard/{id}")]
         public async Task<ActionResult> EditCard(int id, [FromBody] Card editCard)
         {
+            _logger.LogInformation("EditCard starts");
             var card = await _context.Cards.FindAsync(id);
 
 
@@ -30,12 +33,22 @@ namespace Group5.src.api.Controllers
                 return NotFound($"Address not found");
             }
             //edits card
-            card.CreditCardNumber = editCard.CreditCardNumber;
-            card.ExpirationDate = editCard.ExpirationDate;
-            card.CVV= editCard.CVV;
+            if (!string.IsNullOrEmpty(editCard.CreditCardNumber))
+            {
+                card.CreditCardNumber = editCard.CreditCardNumber;
+            }
+            if (editCard.ExpirationDate != default(DateTime))
+            {
+                card.ExpirationDate = editCard.ExpirationDate;
+            }
+            if (!string.IsNullOrEmpty(editCard.CVV))
+            {
+                card.CVV = editCard.CVV;
+            }
 
             //save
             _context.Entry(card).State = EntityState.Modified;
+            _logger.LogInformation("EditCard ends");
             await _context.SaveChangesAsync();
             return Ok(card);
         }
@@ -44,15 +57,18 @@ namespace Group5.src.api.Controllers
         [HttpGet("GetCard/{id}")]
         public async Task<ActionResult<Card>> GetCard(int id)
         {
+            _logger.LogInformation("GetCard starts");
             //finds the card
             var card = await _context.Cards.FindAsync(id);
 
             if (card == null)
             {
-                //returns if cannot find the xard
+                _logger.LogWarning($"Card with id {id} not found");
+                //returns if cannot find the card
                 return NotFound($"Card with id {id} not found");
             }
             //returns the card
+            _logger.LogInformation("GetCard ends");
             return Ok(card);
         }
     }

@@ -3,6 +3,7 @@ using Group5.src.infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Group5.src.api.Controllers
 {
@@ -80,24 +81,53 @@ namespace Group5.src.api.Controllers
         //edits a product by id
         // /Product/EditProduct/{id}
         [HttpPut("EditProduct/{id}")]
-        public async Task<ActionResult> EditProduct(int id, [FromBody] Product editedProduct)
+        public async Task<ActionResult> EditProduct(int id, [FromBody] dynamic editedProductJson)
         {
+            _logger.LogInformation("Start of editproduct");
+            var editedProduct = JsonConvert.DeserializeObject<Product>(editedProductJson.ToString());
+
+            if (!TryValidateModel(editedProduct))
+            {
+                _logger.LogWarning("Product body does not match the model");
+                return BadRequest(ModelState);
+            }
             //Finds the product
             var product = await _context.Products.FindAsync(id);
 
+            
+
             if (product == null)
             {
+                _logger.LogWarning("Product with that id is not found");
                 //returns if not found
                 return NotFound($"Product with id {id} not found");
             }
 
             //updates the product
-            product.ProductName = editedProduct.ProductName;
-            product.Price = editedProduct.Price;
-            product.ProductDescription = editedProduct.ProductDescription;
-            product.Stock = editedProduct.Stock;
-            product.Catagory = editedProduct.Catagory;
-            product.ImageURL = editedProduct.ImageURL;
+            if (!string.IsNullOrEmpty(editedProduct.ProductName))
+            {
+                product.ProductName = editedProduct.ProductName;
+            }
+            if (!string.IsNullOrEmpty(editedProduct.Price))
+            {
+                product.Price = editedProduct.Price;
+            }
+            if (!string.IsNullOrEmpty(editedProduct.ProductDescription))
+            {
+                product.ProductDescription = editedProduct.ProductDescription;
+            }
+            if (!string.IsNullOrEmpty(editedProduct.Stock))
+            {
+                product.Stock = editedProduct.Stock;
+            }
+            if (!string.IsNullOrEmpty(editedProduct.Catagory))
+            {
+                product.Catagory = editedProduct.Catagory;
+            }
+            if (!string.IsNullOrEmpty(editedProduct.ImageURL))
+            {
+                product.ImageURL = editedProduct.ImageURL;
+            }
 
 
             //sets the product as edited
@@ -105,6 +135,7 @@ namespace Group5.src.api.Controllers
             //Saves the product
             await _context.SaveChangesAsync();
             //returns the edited product
+            _logger.LogInformation("Editproduct done and saved product");
             return Ok(product);
         }
         //deletes a product by id
@@ -112,11 +143,13 @@ namespace Group5.src.api.Controllers
         [HttpDelete("DeleteProduct/{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
+            _logger.LogInformation("Product delete started");
             //finds the product
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
+                _logger.LogInformation("Product with that id does not exist");
                 //returns if the priduct was not found
                 return NotFound($"Product with id {id} not found");
             }
@@ -126,7 +159,7 @@ namespace Group5.src.api.Controllers
 
             //saves the changess
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("Product deleted");
             return Ok($"Product with id {id} has been deleted");
         }
     }

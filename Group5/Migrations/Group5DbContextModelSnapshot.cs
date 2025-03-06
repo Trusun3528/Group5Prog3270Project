@@ -116,7 +116,7 @@ namespace Group5.Migrations
                     b.Property<int>("CartID")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Price")
+                    b.Property<double?>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductID")

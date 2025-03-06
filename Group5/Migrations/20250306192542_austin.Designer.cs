@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    [Migration("20250306095247_init")]
-    partial class init
+    [Migration("20250306192542_austin")]
+    partial class austin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,7 +119,7 @@ namespace Group5.Migrations
                     b.Property<int>("CartID")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Price")
+                    b.Property<double?>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductID")
