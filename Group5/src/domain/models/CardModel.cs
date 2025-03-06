@@ -15,9 +15,7 @@ namespace Group5.src.domain.models
         [Required]
         public DateTime ExpirationDate { get; set; }
         [Required]
-        [MaxLength(100)]
-        public string? BillingAddress { get; set; }
-
-        public User? User { get; set; }
+        [MaxLength(3)]
+        public string? CVV { get; set; }
     }
 }

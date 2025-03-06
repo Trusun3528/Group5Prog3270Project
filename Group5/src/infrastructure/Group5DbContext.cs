@@ -17,13 +17,14 @@ namespace Group5.src.infrastructure
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>().HasData(
+            modelBuilder.Entity<Product>().HasData(//populating some products
                 new Product
                 {
                     Id = 1,
@@ -45,7 +46,7 @@ namespace Group5.src.infrastructure
                     ImageURL = "https://cool.com"
                 });
 
-            modelBuilder.Entity<User>().HasData(
+            modelBuilder.Entity<User>().HasData(//populating a user account and a admin account
                 new User
                 {
                     Id = 1,

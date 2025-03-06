@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    [Migration("20250226155956_SeededData")]
-    partial class SeededData
+    [Migration("20250301184905_GROUP5-100")]
+    partial class GROUP5100
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,37 @@ namespace Group5.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Group5.src.domain.models.Address", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("city")
+                        .HasColumnType("text");
+
+                    b.Property<string>("country")
+                        .HasColumnType("text");
+
+                    b.Property<string>("customerName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("postalCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("state")
+                        .HasColumnType("text");
+
+                    b.Property<string>("street")
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
                     b.Property<int>("Id")
@@ -33,10 +64,10 @@ namespace Group5.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("BillingAddress")
+                    b.Property<string>("CVV")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
 
                     b.Property<string>("CreditCardNumber")
                         .IsRequired()
@@ -236,8 +267,8 @@ namespace Group5.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -248,6 +279,9 @@ namespace Group5.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<int>("addressId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -260,7 +294,8 @@ namespace Group5.Migrations
                             Email = "acameron1391@conestogac.on.ca",
                             Password = "password123",
                             Role = "Admin",
-                            UserName = "Austin"
+                            UserName = "Austin",
+                            addressId = 0
                         },
                         new
                         {
@@ -268,19 +303,18 @@ namespace Group5.Migrations
                             Email = "Patrick@google.com",
                             Password = "password123",
                             Role = "User",
-                            UserName = "Patrick"
+                            UserName = "Patrick",
+                            addressId = 0
                         });
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.User", "User")
+                    b.HasOne("Group5.src.domain.models.User", null)
                         .WithMany("Cards")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
