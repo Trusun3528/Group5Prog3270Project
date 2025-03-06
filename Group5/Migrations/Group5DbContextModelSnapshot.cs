@@ -55,11 +55,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<string>("CVV")
                         .IsRequired()
@@ -77,7 +77,7 @@ namespace Group5.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("UserId");
 
@@ -86,11 +86,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -98,7 +98,7 @@ namespace Group5.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("UserId");
 
@@ -107,11 +107,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.CartItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<int>("CartID")
                         .HasColumnType("integer");
@@ -125,7 +125,7 @@ namespace Group5.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("CartID");
 
@@ -136,11 +136,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
@@ -155,7 +155,7 @@ namespace Group5.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("UserId");
 
@@ -164,11 +164,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
@@ -182,7 +182,7 @@ namespace Group5.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.HasIndex("OrderId");
 
@@ -193,11 +193,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<string>("Catagory")
                         .HasMaxLength(50)
@@ -222,7 +222,7 @@ namespace Group5.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.ToTable("Products");
 
@@ -251,11 +251,11 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -280,7 +280,7 @@ namespace Group5.Migrations
                     b.Property<int>("addressId")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("CartId");
 
                     b.ToTable("Users");
 

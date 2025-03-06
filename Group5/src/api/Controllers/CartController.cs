@@ -30,7 +30,7 @@ namespace Group5.src.api.Controllers
 
             var Cart = await _context.Carts
                 .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.Id == Id);
+                .FirstOrDefaultAsync(c => c.CartId == Id);
 
          
                 _context.Carts.Add(cart);
@@ -116,7 +116,7 @@ namespace Group5.src.api.Controllers
         public async Task<ActionResult<CartItem>> GetCarts(int id, int id2)
         {
 
-            var cartItem = await _context.CartItems.Where(ci => ci.CartID == id && ci.Id == id2)
+            var cartItem = await _context.CartItems.Where(ci => ci.CartID == id && ci.CartItemId == id2)
                                  .FirstOrDefaultAsync();
 
             if (cartItem == null)

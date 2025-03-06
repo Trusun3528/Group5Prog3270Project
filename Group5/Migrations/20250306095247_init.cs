@@ -85,7 +85,7 @@ namespace Group5.Migrations
                         name: "FK_Cards_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -105,7 +105,7 @@ namespace Group5.Migrations
                         name: "FK_Carts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -127,7 +127,7 @@ namespace Group5.Migrations
                         name: "FK_Orders_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -149,13 +149,13 @@ namespace Group5.Migrations
                         name: "FK_CartItems_Carts_CartID",
                         column: x => x.CartID,
                         principalTable: "Carts",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CartItems_Products_ProductID",
                         column: x => x.ProductID,
                         principalTable: "Products",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -177,19 +177,19 @@ namespace Group5.Migrations
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
+                        principalColumn: "CartId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "Catagory", "ImageURL", "Price", "ProductDescription", "ProductName", "Stock" },
+                columns: new[] { "CartId", "Catagory", "ImageURL", "Price", "ProductDescription", "ProductName", "Stock" },
                 values: new object[,]
                 {
                     { 1, "Car", "https://cool.com", 119.98999999999999, "Its a tire", "Left Tire", 100 },
@@ -198,7 +198,7 @@ namespace Group5.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "Email", "Password", "Role", "UserName", "addressId" },
+                columns: new[] { "CartId", "Email", "Password", "Role", "UserName", "addressId" },
                 values: new object[,]
                 {
                     { 1, "acameron1391@conestogac.on.ca", "password123", "Admin", "Austin", 0 },

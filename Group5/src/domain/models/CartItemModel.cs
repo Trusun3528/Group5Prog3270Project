@@ -6,7 +6,7 @@ namespace Group5.src.domain.models
     public class CartItem
     {
         [Key]
-        public int Id { get; set; }
+        public int CartItemId { get; set; }
         [Required]
         public int CartID { get; set; }
         [Required]
