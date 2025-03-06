@@ -1,0 +1,23 @@
+﻿@Group5_HostAddress = http://localhost:5251
+
+POST {{Group5_HostAddress}}/api/account/CreateAccount
+Content-Type: application/json
+
+{
+  //CreateUserModel
+}
+
+###
+
+POST {{Group5_HostAddress}}/api/account/CreateAccount
+Content-Type: application/json
+
+{
+  //CreateUserModel
+}
+
+###
+
+POST {{Group5_HostAddress}}/api/Account
+
+###

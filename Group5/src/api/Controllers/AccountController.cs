@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text;
 using System.ComponentModel;
@@ -16,15 +17,15 @@ namespace Group5.src.api.Controllers
     public class AccountController : Controller
     {
 
-
+        private readonly IConfiguration _config;
         private readonly Group5DbContext _context;
 
 
 
-        public AccountController(Group5DbContext context)
+        public AccountController(Group5DbContext context, IConfiguration config)
         {
             _context = context;
-
+            _config = config;
         }
 
         public IActionResult Index()
@@ -125,7 +126,7 @@ namespace Group5.src.api.Controllers
             return Ok(new { Message = "Sign out done" });
         }
 
-
+        [Authorize]
         [HttpPut("EditAccount/{id}")]
         public async Task<ActionResult> EditAccount(int id, [FromBody] User editAccount)
         {
@@ -148,6 +149,7 @@ namespace Group5.src.api.Controllers
             return Ok(account);
         }
 
+        [Authorize]
         [HttpPut("EditAddress/{id}")]
         public async Task<ActionResult> EditAddress(int id, [FromBody] Address editAddress)
         {
@@ -172,6 +174,17 @@ namespace Group5.src.api.Controllers
             await _context.SaveChangesAsync();
             return Ok(address);
         }
+
+        [Authorize]
+        [HttpGet("AllUsers")]
+        public async Task<ActionResult> AllUsers()
+        {
+
+            var users = await _context.Users.Select(u => new { u.Id, u.Email, u.UserName }).ToListAsync();
+
+            return Ok(users);
+        }
+
     }
 
 }
