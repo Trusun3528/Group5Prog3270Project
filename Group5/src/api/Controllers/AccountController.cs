@@ -1,4 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*
+ * Project: Open Source Web Programing Midterm Check-In
+ * Group Number: 5
+ * Group Members: Patrick Harte, Austin Casselman, Austin Cameron, Leif Johannesson
+ * Revision History:
+ *      Created: January 25th, 2025
+ *      Submitted: March 6th, 2025
+ */
+
+using Microsoft.AspNetCore.Mvc;
 using Group5.src.domain.models;
 using Group5.src.infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +28,12 @@ namespace Group5.src.api.Controllers
 
         private readonly IConfiguration _config;
         private readonly Group5DbContext _context;
+        private readonly ILogger<AccountController> _logger;
         private readonly ILogger<ProductController> _logger;
 
 
 
+        public AccountController(Group5DbContext context, IConfiguration config, ILogger<AccountController> logger)
         public AccountController(Group5DbContext context, IConfiguration config, ILogger<ProductController> logger)
         {
             _context = context;
@@ -37,6 +48,12 @@ namespace Group5.src.api.Controllers
 
         [HttpPost("CreateAccount")]
         public async Task<ActionResult> CreateAccount([FromBody] CreateUserModel request)
+        {
+
+            _logger.LogInformation("Properly recieved request to create an account for" + request.Email);
+
+        
+            //Creates the address for the new account
         {//Creates the address for the new account
             _logger.LogInformation("Start account creation");
             var address = new Address
@@ -85,7 +102,9 @@ namespace Group5.src.api.Controllers
             _logger.LogInformation("card created");
             _logger.LogInformation("end account creation and saved");
             await _context.SaveChangesAsync();
+            _logger.LogInformation("Account was created succesfully for the wanted email" + request.Email);
             return Ok(user);
+                
 
 
         }
@@ -99,6 +118,7 @@ namespace Group5.src.api.Controllers
 
             if (user == null)
             {
+                return Unauthorized("Invalid Sign in. Error 401: Please Enter Data in the User Text Box");
                 _logger.LogWarning("Invalid Sign in");
                 return Unauthorized("Invalid Sign in");
             }
@@ -106,8 +126,10 @@ namespace Group5.src.api.Controllers
             bool encryptPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
 
 
+
             if (!encryptPassword)
             {
+                return Unauthorized("Invalid Sign in. Error 401: Please Enter Correct Data in the Password Text Box");
                 _logger.LogWarning("Invalid Sign in");
                 return Unauthorized("Invalid Sign in.");
             }
@@ -160,7 +182,7 @@ namespace Group5.src.api.Controllers
             {
                 _logger.LogWarning($"Account not found");
                 //returns if not found
-                return NotFound($"Account not found");
+                return NotFound($"Error 404: Account not found");
             }
             //edits the account
             if (!string.IsNullOrEmpty(editAccount.UserName))
@@ -194,12 +216,11 @@ namespace Group5.src.api.Controllers
             _logger.LogInformation("Editaddress start");
             var address = await _context.Addresses.FindAsync(id);
 
-
             if (address == null)
             {
                 _logger.LogWarning($"Account not found");
                 //returns if not found
-                return NotFound($"Address not found");
+                return NotFound($"Error 404: Address not found");
             }
             //edits the address
             if (!string.IsNullOrEmpty(editAddress.customerName))
@@ -238,10 +259,12 @@ namespace Group5.src.api.Controllers
         [HttpGet("AllUsers")]
         public async Task<ActionResult> AllUsers()
         {
+            //lists all the users if you would like with the Id, Email and UserName
             _logger.LogInformation($"allusers started");
 
             var users = await _context.Users.Select(u => new { u.Id, u.Email, u.UserName }).ToListAsync();
 
+            //returns the users from the command above
             _logger.LogInformation($"allusers end");
             return Ok(users);
 

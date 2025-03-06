@@ -1,7 +1,17 @@
-﻿using Group5.src.domain.models;
+﻿/*
+ * Project: Open Source Web Programing Midterm Check-In
+ * Group Number: 5
+ * Group Members: Patrick Harte, Austin Casselman, Austin Cameron, Leif Johannesson
+ * Revision History:
+ *      Created: January 25th, 2025
+ *      Submitted: March 6th, 2025
+ */
+
+using Group5.src.domain.models;
 using Group5.src.infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Newtonsoft.Json;
 
 
@@ -11,7 +21,6 @@ namespace Group5.src.api.Controllers
     [Route("[controller]")]
     public class CartController : Controller
     {
-        //private readonly CartModel _cartModel;
         private readonly Group5DbContext _context;
         private readonly ILogger<ProductController> _logger;
 
@@ -20,16 +29,13 @@ namespace Group5.src.api.Controllers
             _context = context;
             _logger = logger;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
-
-        //adds a cart
         [HttpPost("AddCart")]
         public async Task<ActionResult<Cart>> AddCart([FromBody] Cart cart)
         {
+            var Cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.Id == Id);
             try
             {
                 _logger.LogInformation("start addcart");
@@ -47,6 +53,8 @@ namespace Group5.src.api.Controllers
                     return NotFound($"User with id {cart.UserId} not found");
                 }
 
+
+            _context.Carts.Add(cart);
                 // Ensure the Carts collection is there
                 if (user.Carts == null)
                 {
@@ -56,10 +64,14 @@ namespace Group5.src.api.Controllers
                 cart.TotalAmount = 0;
                 user.Carts.Add(cart);
 
+            await _context.SaveChangesAsync();
                 _context.Carts.Add(cart);
                 _logger.LogInformation("end and saved addcart");
                 await _context.SaveChangesAsync();
 
+
+            return Ok(cart);
+        }
                 return Ok(cart);
             }
             catch (Exception ex)
@@ -76,7 +88,7 @@ namespace Group5.src.api.Controllers
 
         //gets all the carts
         [HttpGet("GetCarts")]
-        public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
+        public async Task<ActionResult<IEnumerable<Cart>>> GetCarts(int id)
         {
             _logger.LogInformation("start getcarts");
             var Id = User.Identity.Name;
@@ -101,9 +113,8 @@ namespace Group5.src.api.Controllers
             return Ok(cart);
         }
 
-        //Deletes a cart
-        [HttpDelete("DeleteCart/{id}")]
-        public async Task<ActionResult> DeleteCart(int id)
+        [HttpGet("GetCarts/{id}")]
+        public async Task<ActionResult<Cart>> GetCart(int id)
         {
             _logger.LogInformation("start deletecart");
             var cart = await _context.Carts.FindAsync(id);
@@ -121,9 +132,22 @@ namespace Group5.src.api.Controllers
             return Ok($"Cart with id {id} has been deleted");
         }
 
-        //adds a item to a cart
+        [HttpDelete("DeleteCart/{id}")]
+        public async Task<ActionResult> DeleteCart(int id)
+        {
+            var cart = await _context.Carts.FindAsync(id);
+            if (cart == null) return NotFound($"Cart with id {id} not found");
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
+            return Ok($"Cart with id {id} has been deleted");
+        }
 
         [HttpPost("AddCartItem")]
+        public async Task<ActionResult<CartItem>> AddCartItem([FromBody] CartItem cartItem)
+        {
+            _context.CartItems.Add(cartItem);
+
+            await _context.SaveChangesAsync();
         public async Task<ActionResult<CartItem>> AddCartItem([FromBody] CartItem cartItem)
         {
             try
@@ -161,6 +185,8 @@ namespace Group5.src.api.Controllers
                 _logger.LogInformation("end and saved cart item");
                 await _context.SaveChangesAsync();
 
+            return Ok(cartItem);
+        }
                 return Ok(cartItem);
             }
             catch (Exception ex)
@@ -173,7 +199,6 @@ namespace Group5.src.api.Controllers
 
 
 
-        //gets a specific item from a cart
         [HttpGet("GetCartItems/{id}")]
         public async Task<ActionResult<IEnumerable<CartItem>>> GetCartItems(int id)
         {
@@ -189,6 +214,7 @@ namespace Group5.src.api.Controllers
             _logger.LogInformation("end addcartitem");
             return Ok(cartItems);
         }
+
         //Gets all the items in a cart
         [HttpGet("GetCartItems/{id}/{id2}")]
         public async Task<ActionResult<CartItem>> GetCarts(int id, int id2)
@@ -206,8 +232,6 @@ namespace Group5.src.api.Controllers
             return Ok(cartItem);
         }
 
-
-        //deletes a cartitem
         [HttpDelete("DeleteCartItem/{id}")]
         public async Task<ActionResult> DeleteCartItem(int id)
         {
@@ -216,6 +240,7 @@ namespace Group5.src.api.Controllers
 
             if (cartItem == null)
             {
+                return NotFound($"Error 404: Cart with id {id} not found");
                 _logger.LogWarning($"Cart with id {id} not found");
 
                 return NotFound($"Cart with id {id} not found");
@@ -229,7 +254,6 @@ namespace Group5.src.api.Controllers
             return Ok($"cart Item with id {id} has been deleted");
         }
 
-        //edit a cart items
         [HttpPut("EditCartItem/{id}")]
         public async Task<ActionResult> EditCartItem(int id, [FromBody] dynamic editedCartItemJson)
         {
@@ -259,6 +283,8 @@ namespace Group5.src.api.Controllers
             }
 
             //updates the product
+            cartItem.Quantity = editedCartItem.Quantity;
+
             if (!string.IsNullOrEmpty(editedCartItem.Quantity))
             {
                 cartItem.Quantity = editedCartItem.Quantity;
@@ -274,5 +300,107 @@ namespace Group5.src.api.Controllers
             return Ok(cartItem);
         }
 
+        [HttpPost("Checkout")]
+        public async Task<ActionResult> CheckoutCart([FromBody] GuestCheckoutModel? guestData)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            int? userId = userIdClaim != null ? int.Parse(userIdClaim.Value) : null;
+            Cart? userCart;
+
+            if (userId != null)
+            {
+
+                userCart = await _context.Carts
+                    .Include(c => c.CartItems)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            }
+            else
+            {
+
+                //if guest data is not shared the return badrequest is sent to the user
+                if (guestData == null || guestData.CartItems == null || !guestData.CartItems.Any())
+
+                    return BadRequest("Error 400: Cart is empty or missing.");
+
+                //the cart that only a user can access
+                userCart = new Cart
+                {
+
+                    CartItems = guestData.CartItems.Select(i => new CartItem
+                    {
+                        ProductID = i.ProductId,
+                        Quantity = i.Quantity,
+                        Price = i.Price
+                    }).ToList()
+
+                };
+            }
+
+            //if the cart is empty it shows the BadRequest quote
+            if (userCart == null || !userCart.CartItems.Any())
+                return BadRequest("Error 400: Cart is empty.");
+
+            //this is to make sure that a user is logged in so they can access the discount
+            bool isUserLoggedIn = userId != null;
+
+            //this variable is a sum of all variables in the cart
+            decimal totalAmount = userCart.CartItems.Sum(i => i.Price * i.Quantity);
+
+            //this shows the discount percent that only user can access
+            decimal discountPercentage = userId != null ? 0.10m : 0.00m;
+
+            //this shows the amount off of the total amount which is what happens when a discount is applied to a total like how 10% of of $10 would be $1 off
+            decimal discountAmount = totalAmount * discountPercentage;
+
+            //like for the above variable a total of $10 with a 10% discount is $1 off so $10 - 1$ = $9 new total
+            decimal finalAmount = totalAmount - discountAmount;
+
+            var order = new Order
+            {
+                //registered user id
+                UserId = userId,
+
+                //the email of the guest if they give us their email
+                GuestEmail = guestData?.GuestEmail,
+
+                //the date and time of when they checkout
+                OrderDate = DateTime.UtcNow,
+
+                //the amount the user or guest pays 
+                TotalAmount = finalAmount,
+
+                //the discount that only users can use
+                DiscountApplied = discountAmount,
+
+                //the cart data for the instance
+                OrderItems = userCart.CartItems.Select(i => new OrderItem
+                {
+                    ProductId = i.ProductID,
+                    Quantity = i.Quantity,
+                    Price = i.Price
+                }).ToList()
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            if (userId != null)
+            {
+                _context.CartItems.RemoveRange(userCart.CartItems);
+                await _context.SaveChangesAsync();
+            }
+
+            //this will be returned when someone checks out
+            return Ok(new
+            {
+                Message = "Checkout successful!",
+                Order = order,
+                DiscountApplied = discountAmount,
+                FinalTotal = finalAmount
+            });
+        }
     }
 }
+
+
