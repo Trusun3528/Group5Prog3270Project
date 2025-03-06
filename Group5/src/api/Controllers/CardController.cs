@@ -1,5 +1,6 @@
 ﻿using Group5.src.domain.models;
 using Group5.src.infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace Group5.src.api.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpPut("EditCard/{id}")]
         public async Task<ActionResult> EditCard(int id, [FromBody] Card editCard)
         {
@@ -38,6 +40,7 @@ namespace Group5.src.api.Controllers
             return Ok(card);
         }
 
+        [Authorize]
         [HttpGet("GetCard/{id}")]
         public async Task<ActionResult<Card>> GetCard(int id)
         {

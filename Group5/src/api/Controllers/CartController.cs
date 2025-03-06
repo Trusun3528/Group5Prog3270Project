@@ -3,13 +3,14 @@ using Group5.src.infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Group5.src.api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class CartController : Controller
     {
-
+        //private readonly CartModel _cartModel;
         private readonly Group5DbContext _context;
 
         public CartController(Group5DbContext context)
@@ -24,11 +25,18 @@ namespace Group5.src.api.Controllers
 
         //adds a cart
         [HttpPost("AddCart")]
-        public async Task<ActionResult<Cart>> AddCart([FromBody] Cart cart)
+        public async Task<ActionResult<Cart>> AddCart([FromBody] Cart cart, int Id)
         {
-            _context.Carts.Add(cart);
 
-            await _context.SaveChangesAsync();
+            var Cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.Id == Id);
+
+         
+                _context.Carts.Add(cart);
+
+                await _context.SaveChangesAsync();
+
 
             return Ok(cart);
 
@@ -39,6 +47,7 @@ namespace Group5.src.api.Controllers
         [HttpGet("GetCarts")]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
         {
+            var Id = User.Identity.Name;
             var carts = await _context.Carts.ToListAsync();
             
             return Ok(carts);

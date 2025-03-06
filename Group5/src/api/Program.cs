@@ -2,6 +2,9 @@ using Group5.src.domain.models;
 using Group5.src.infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +22,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Group5DbContext>()
     .AddDefaultTokenProviders();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,9 +33,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
