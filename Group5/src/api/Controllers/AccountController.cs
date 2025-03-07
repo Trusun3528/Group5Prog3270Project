@@ -19,11 +19,11 @@ namespace Group5.src.api.Controllers
 
         private readonly IConfiguration _config;
         private readonly Group5DbContext _context;
-        private readonly ILogger<ProductController> _logger;
+        private readonly ILogger<AccountController> _logger;
 
 
 
-        public AccountController(Group5DbContext context, IConfiguration config, ILogger<ProductController> logger)
+        public AccountController(Group5DbContext context, IConfiguration config, ILogger<AccountController> logger)
         {
             _context = context;
             _config = config;
