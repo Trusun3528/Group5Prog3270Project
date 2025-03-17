@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.Google;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -28,6 +32,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Group5DbContext>()
     .AddDefaultTokenProviders();
 
+
+// Add services to the container.
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,9 +51,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllers();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 logger.LogInformation("Application has started.");
+
+
 app.Run();
