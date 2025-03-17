@@ -246,7 +246,7 @@ namespace Group5.src.api.Controllers
             return Ok(users);
 
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet("GetUser/{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
