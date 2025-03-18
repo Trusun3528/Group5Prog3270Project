@@ -191,8 +191,8 @@ namespace Group5.Migrations
                 columns: new[] { "Id", "Catagory", "ImageURL", "Price", "ProductDescription", "ProductName", "Stock" },
                 values: new object[,]
                 {
-                    { 1, "Car", "https://cool.com", 119.98999999999999, "Its a tire", "Left Tire", 100 },
-                    { 2, "Kitchen", "https://cool.com", 29.989999999999998, "Plunge your sink", "Sink Plunger", 50 }
+                    { 1, "Car", "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg", 119.98999999999999, "Its a tire", "Left Tire", 100 },
+                    { 2, "Kitchen", "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l", 29.989999999999998, "Plunge your sink", "Sink Plunger", 50 }
                 });
 
             migrationBuilder.InsertData(

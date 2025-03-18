@@ -33,7 +33,7 @@ namespace Group5.src.infrastructure
                     ProductDescription = "Its a tire",
                     Stock = 100,
                     Catagory = "Car",
-                    ImageURL = "https://cool.com"
+                    ImageURL = "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg"
                 },
                 new Product
                 {
@@ -43,7 +43,7 @@ namespace Group5.src.infrastructure
                     ProductDescription = "Plunge your sink",
                     Stock = 50,
                     Catagory = "Kitchen",
-                    ImageURL = "https://cool.com"
+                    ImageURL = "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l"
                 });
 
             modelBuilder.Entity<User>().HasData(//populating a user account and a admin account
@@ -52,7 +52,7 @@ namespace Group5.src.infrastructure
                     Id = 1,
                     UserName = "Austin",
                     Email = "acameron1391@conestogac.on.ca",
-                    Password = "password123",
+                    Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                     Role = "Admin"
                 },
                 new User
@@ -60,7 +60,7 @@ namespace Group5.src.infrastructure
                     Id = 2,
                     UserName = "Patrick",
                     Email = "Patrick@google.com",
-                    Password = "password123",
+                    Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                     Role = "User"
                 });
         }
