@@ -1,9 +1,11 @@
-﻿using Group5.src.domain.models;
+﻿using System.Security.Claims;
+using Group5.src.domain.models;
 using Group5.src.infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-
 
 namespace Group5.src.api.Controllers
 {
@@ -69,9 +71,30 @@ namespace Group5.src.api.Controllers
             }
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("GetUserCart")]
+        public async Task<ActionResult<Product>> GetUserCart() {
+            var userModel = await UserHelper.GetUserModel(HttpContext, _context);
 
+            if (userModel == null) {
+                _logger.LogInformation("Cart retrieval failed.");
+                return Unauthorized();
+            }
 
+            var cart = userModel.Carts?.First();
 
+            if (cart == null) {
+                cart = new Cart
+                {
+                    UserId = userModel.Id
+                };
+
+                await AddCart(cart);
+            }
+
+            _logger.LogInformation("Cart retrieval success.");
+            return await GetCarts(cart.Id);
+        }
 
 
         //gets all the carts
