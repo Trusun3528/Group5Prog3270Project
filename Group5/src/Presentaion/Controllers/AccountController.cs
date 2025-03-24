@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.ComponentModel;
 
-namespace Group5.src.api.Controllers
+namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -37,7 +37,8 @@ namespace Group5.src.api.Controllers
 
         [HttpPost("CreateAccount")]
         public async Task<ActionResult> CreateAccount([FromBody] CreateUserModel request)
-        {//Creates the address for the new account
+        {
+            // Creates the address for the new account
             _logger.LogInformation("Start account creation");
             var address = new Address
             {
@@ -50,8 +51,9 @@ namespace Group5.src.api.Controllers
             };
             _context.Addresses.Add(address);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("address created");
-            //creates the account with a encrypted password and adds the newly made address
+            _logger.LogInformation("Address created");
+
+            // Creates the account with an encrypted password and adds the newly made address
             string EncryptPass = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = new User
             {
@@ -64,31 +66,33 @@ namespace Group5.src.api.Controllers
                 Carts = new List<Cart>(),
                 Orders = new List<Order>()
             };
-            if (!TryValidateModel(user))
+
+            if (!ModelState.IsValid)
             {
-                _logger.LogInformation("info does not match the model");
+                _logger.LogInformation("Info does not match the model");
                 return BadRequest(ModelState);
             }
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("account created");
-            //adds a card to the account
-            var Card = new Card
+            _logger.LogInformation("Account created");
+
+            // Adds a card to the account
+            var card = new Card
             {
                 UserId = user.Id,
-                CreditCardNumber = "1234567890123456",//fillerdata
-                ExpirationDate = DateTime.UtcNow,//utc is required for postgress
-                CVV = "123"//fillerdata
+                CreditCardNumber = "1234567890123456", // Filler data
+                ExpirationDate = DateTime.UtcNow,     // UTC is required for PostgreSQL
+                CVV = "123"                           // Filler data
             };
-            _context.Cards.Add(Card);
-            _logger.LogInformation("card created");
-            _logger.LogInformation("end account creation and saved");
+            _context.Cards.Add(card);
+            _logger.LogInformation("Card created");
+            _logger.LogInformation("End account creation and saved");
+
             await _context.SaveChangesAsync();
             return Ok(user);
-
-
         }
+
         //allows for the user to sign in
         [HttpPost("SignInAccount")]
         public async Task<ActionResult> SignInAccount([FromBody] SignInModel request)
@@ -142,7 +146,7 @@ namespace Group5.src.api.Controllers
         public ActionResult SignOutAccount()
         {
             _logger.LogInformation("Signout started");
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear();
             _logger.LogInformation("Signout end");
             return Ok(new { Message = "Sign out done" });
             

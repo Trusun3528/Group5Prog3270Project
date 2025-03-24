@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    [Migration("20250306234323_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250324054459_CleanArch")]
+    partial class CleanArch
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,7 +215,7 @@ namespace Group5.Migrations
                         {
                             Id = 1,
                             Catagory = "Car",
-                            ImageURL = "https://cool.com",
+                            ImageURL = "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg",
                             Price = 119.98999999999999,
                             ProductDescription = "Its a tire",
                             ProductName = "Left Tire",
@@ -225,7 +225,7 @@ namespace Group5.Migrations
                         {
                             Id = 2,
                             Catagory = "Kitchen",
-                            ImageURL = "https://cool.com",
+                            ImageURL = "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l",
                             Price = 29.989999999999998,
                             ProductDescription = "Plunge your sink",
                             ProductName = "Sink Plunger",
@@ -271,7 +271,7 @@ namespace Group5.Migrations
                         {
                             Id = 1,
                             Email = "acameron1391@conestogac.on.ca",
-                            Password = "password123",
+                            Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                             Role = "Admin",
                             UserName = "Austin",
                             addressId = 0
@@ -280,7 +280,7 @@ namespace Group5.Migrations
                         {
                             Id = 2,
                             Email = "Patrick@google.com",
-                            Password = "password123",
+                            Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                             Role = "User",
                             UserName = "Patrick",
                             addressId = 0
