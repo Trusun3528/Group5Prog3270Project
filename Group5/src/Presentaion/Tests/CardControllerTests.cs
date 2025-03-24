@@ -1,7 +1,7 @@
-namespace Group5.Tests;
-using Group5.src.api.Controllers;
+namespace Group5.src.Presentaion.Tests;
 using Group5.src.domain.models;
 using Group5.src.infrastructure;
+using Group5.src.Presentaion.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

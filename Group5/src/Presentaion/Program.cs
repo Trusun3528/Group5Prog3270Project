@@ -37,7 +37,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Group5DbContext>(options =>
-    options.UseSqlite("Data Source=data.db"));
+    options.UseSqlite("Data Source=src/infrastructure/data.db"));
+
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<Group5DbContext>()

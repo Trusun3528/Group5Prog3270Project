@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Group5.src.api.Controllers
+namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -27,25 +27,28 @@ namespace Group5.src.api.Controllers
         //adds a product
         // /Product/AddProduct
         [HttpPost("AddProduct")]
-        public async Task<ActionResult<Product>> AddProduct([FromBody] dynamic productJson)
+        public async Task<ActionResult<Product>> AddProduct([FromBody] Product product)
         {
             _logger.LogInformation("Start Add product");
-            //if the body does not match the model it will send a 400
 
-            var product = JsonConvert.DeserializeObject<Product>(productJson.ToString());
-            if (!TryValidateModel(product))
+            if (!ModelState.IsValid)
             {
                 _logger.LogInformation("Product body does not match the model");
                 return BadRequest(ModelState);
             }
-            //adds the product
+
+            // Adds the product
             _context.Products.Add(product);
             _logger.LogInformation("End and saved addproduct");
-            //saves the changes
+
+            // Saves the changes
             await _context.SaveChangesAsync();
-            //returns the product
+
+            // Returns the product
             return Ok(product);
         }
+
+
 
         //gets all the products
         // /Product/GetProducts
@@ -81,34 +84,32 @@ namespace Group5.src.api.Controllers
         //edits a product by id
         // /Product/EditProduct/{id}
         [HttpPut("EditProduct/{id}")]
-        public async Task<ActionResult> EditProduct(int id, [FromBody] dynamic editedProductJson)
+        public async Task<ActionResult> EditProduct(int id, [FromBody] Product editedProduct)
         {
             _logger.LogInformation("Start of editproduct");
-            var editedProduct = JsonConvert.DeserializeObject<Product>(editedProductJson.ToString());
 
-            if (!TryValidateModel(editedProduct))
+            if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Product body does not match the model");
                 return BadRequest(ModelState);
             }
-            //Finds the product
-            var product = await _context.Products.FindAsync(id);
 
-            
+            // Finds the product
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
                 _logger.LogWarning("Product with that id is not found");
-                //returns if not found
+                // Returns if not found
                 return NotFound($"Product with id {id} not found");
             }
 
-            //updates the product
+            // Updates the product
             if (!string.IsNullOrEmpty(editedProduct.ProductName))
             {
                 product.ProductName = editedProduct.ProductName;
             }
-            if (!string.IsNullOrEmpty(editedProduct.Price))
+            if (editedProduct.Price.HasValue)
             {
                 product.Price = editedProduct.Price;
             }
@@ -116,7 +117,7 @@ namespace Group5.src.api.Controllers
             {
                 product.ProductDescription = editedProduct.ProductDescription;
             }
-            if (!string.IsNullOrEmpty(editedProduct.Stock))
+            if (editedProduct.Stock > 0)
             {
                 product.Stock = editedProduct.Stock;
             }
@@ -129,15 +130,17 @@ namespace Group5.src.api.Controllers
                 product.ImageURL = editedProduct.ImageURL;
             }
 
-
-            //sets the product as edited
+            // Sets the product as edited
             _context.Entry(product).State = EntityState.Modified;
-            //Saves the product
+
+            // Saves the product
             await _context.SaveChangesAsync();
-            //returns the edited product
+
+            // Returns the edited product
             _logger.LogInformation("Editproduct done and saved product");
             return Ok(product);
         }
+
         //deletes a product by id
         // /Product/DeleteProduct/{id}
         [HttpDelete("DeleteProduct/{id}")]

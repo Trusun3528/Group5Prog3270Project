@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CleanArch : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -200,8 +200,8 @@ namespace Group5.Migrations
                 columns: new[] { "Id", "Email", "Password", "Role", "UserName", "addressId" },
                 values: new object[,]
                 {
-                    { 1, "acameron1391@conestogac.on.ca", "password123", "Admin", "Austin", 0 },
-                    { 2, "Patrick@google.com", "password123", "User", "Patrick", 0 }
+                    { 1, "acameron1391@conestogac.on.ca", "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2", "Admin", "Austin", 0 },
+                    { 2, "Patrick@google.com", "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2", "User", "Patrick", 0 }
                 });
 
             migrationBuilder.CreateIndex(
