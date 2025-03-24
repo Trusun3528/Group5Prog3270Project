@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.Google;
 
-namespace Group5.src.api.Controllers
+namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("Gemini")]
@@ -41,9 +41,9 @@ namespace Group5.src.api.Controllers
                 //Filter the products based on the prompt
                 var relevantProducts = allProducts
                     .Where(p => promptKeywords.Any(keyword =>
-                                (p.ProductName?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                                (p.Catagory?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                                (p.ProductDescription?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)))
+                                p.ProductName?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                p.Catagory?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                p.ProductDescription?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
 
                 //Format the product for the Ais response

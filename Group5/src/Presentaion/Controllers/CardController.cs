@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Group5.src.api.Controllers
+namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -37,7 +37,7 @@ namespace Group5.src.api.Controllers
             {
                 card.CreditCardNumber = editCard.CreditCardNumber;
             }
-            if (editCard.ExpirationDate != default(DateTime))
+            if (editCard.ExpirationDate != default)
             {
                 card.ExpirationDate = editCard.ExpirationDate;
             }

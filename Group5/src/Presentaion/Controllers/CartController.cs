@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 
-namespace Group5.src.api.Controllers
+namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("[controller]")]

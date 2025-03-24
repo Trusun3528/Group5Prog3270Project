@@ -9,7 +9,9 @@ namespace Group5.src.infrastructure
             : base(options)
         {
         }
-
+        public Group5DbContext()
+        {
+        }
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
@@ -64,5 +66,6 @@ namespace Group5.src.infrastructure
                     Role = "User"
                 });
         }
+        public virtual DbSet<Card> GetCards() => Cards;
     }
 }

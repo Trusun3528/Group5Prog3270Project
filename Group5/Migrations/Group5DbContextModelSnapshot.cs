@@ -268,7 +268,7 @@ namespace Group5.Migrations
                         {
                             Id = 1,
                             Email = "acameron1391@conestogac.on.ca",
-                            Password = "password123",
+                            Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                             Role = "Admin",
                             UserName = "Austin",
                             addressId = 0
@@ -277,7 +277,7 @@ namespace Group5.Migrations
                         {
                             Id = 2,
                             Email = "Patrick@google.com",
-                            Password = "password123",
+                            Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                             Role = "User",
                             UserName = "Patrick",
                             addressId = 0
