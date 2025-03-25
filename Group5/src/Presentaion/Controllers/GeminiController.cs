@@ -35,26 +35,31 @@ namespace Group5.src.Presentaion.Controllers
                 //get the wanted words from the users prompt
                 var promptKeywords = getWantedWords(userPrompt.Prompt);
 
+
                 //Search the database for the products
                 var allProducts = await _dbContext.Products.ToListAsync();
+                var allCategories = await _dbContext.Categories.ToListAsync();
 
                 //Filter the products based on the prompt
                 var relevantProducts = allProducts
                     .Where(p => promptKeywords.Any(keyword =>
                                 p.ProductName?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                p.Catagory?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                 p.ProductDescription?.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0))
                     .ToList();
 
                 //Format the product for the Ais response
                 var productData = relevantProducts.Any()
                     ? string.Join("\n", relevantProducts.Select(p =>
-                        $"Name: {p.ProductName}, Price: {p.Price:C}, Description: {p.ProductDescription}, Stock: {p.Stock}, Category: {p.Catagory}, Image: {p.ImageURL}"))
+                    {
+                        // Find the matching category name based on CategoryId
+                        var categoryName = allCategories.FirstOrDefault(c => c.Id == p.CatagoryId)?.CategoryName ?? "Unknown";
+                        return $"Name: {p.ProductName}, Price: {p.Price:C}, Description: {p.ProductDescription}, Stock: {p.Stock}, Category: {categoryName}, Image: {p.ImageURL}";
+                    }))
                     : "No matching products found.";
 
-                
+
                 //Telling the ai who it is and what it should do
-                var assistantRole = "You are an assistant named Doesn'tExistAI designed to help users learn more about products. Provide clear, and helpful information using the product database. Be concise and speak like a human.";
+                var assistantRole = "You are an assistant named UselessProductsAi designed to help users learn more about products. Provide clear, and helpful information using the product database. Be concise and speak like a human. Only give responses that are relevent to the products, if the user asks a question that is not relevent tell them what you are for";
 
                 //Gets the final prompt to give the ai
                 var FinalPrompt = $"{assistantRole}\n\nUser Query: {userPrompt.Prompt}\n\nAvailable Products:\n{productData}";

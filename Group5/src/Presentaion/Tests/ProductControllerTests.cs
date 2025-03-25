@@ -38,8 +38,8 @@ public class ProductControllerTests
         };
 
         // Seed the database with test data
-        _context.Products.Add(new Product { Id = 1, ProductName = "Test Product 1", Price = 10.00, ProductDescription = "Description 1", Stock = 100, Catagory = "Category 1", ImageURL = "http://example.com/image1.jpg" });
-        _context.Products.Add(new Product { Id = 2, ProductName = "Test Product 2", Price = 20.00, ProductDescription = "Description 2", Stock = 200, Catagory = "Category 2", ImageURL = "http://example.com/image2.jpg" });
+        _context.Products.Add(new Product { Id = 1, ProductName = "Test Product 1", Price = 10.00, ProductDescription = "Description 1", Stock = 100, CatagoryId = 1, ImageURL = "http://example.com/image1.jpg" });
+        _context.Products.Add(new Product { Id = 2, ProductName = "Test Product 2", Price = 20.00, ProductDescription = "Description 2", Stock = 200, CatagoryId = 2, ImageURL = "http://example.com/image2.jpg" });
 
         _context.SaveChanges();
     }
@@ -60,7 +60,7 @@ public class ProductControllerTests
             Price = 30.00,
             ProductDescription = "New Description",
             Stock = 300,
-            Catagory = "Category 3",
+            CatagoryId = 3,
             ImageURL = "http://example.com/image3.jpg"
         };
 
@@ -89,7 +89,7 @@ public class ProductControllerTests
             Price = -1.00, 
             ProductDescription = "Invalid Description",
             Stock = -10, 
-            Catagory = "Category Invalid",
+            CatagoryId = 10000000,
             ImageURL = "" 
         };
 
@@ -131,7 +131,7 @@ public class ProductControllerTests
     [TestMethod]
     public async Task EditProduct_ValidId_ReturnsOk()
     {
-        var editedProduct = new Product { ProductName = "Edited Product", Price = 40.00, ProductDescription = "Edited Description", Stock = 400, Catagory = "Category 4", ImageURL = "http://example.com/image4.jpg" };
+        var editedProduct = new Product { ProductName = "Edited Product", Price = 40.00, ProductDescription = "Edited Description", Stock = 400, CatagoryId = 4, ImageURL = "http://example.com/image4.jpg" };
         var result = await _controller.EditProduct(1, editedProduct);
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
     }
@@ -145,7 +145,7 @@ public class ProductControllerTests
             Price = 40.00,
             ProductDescription = "Edited Description",
             Stock = 400,
-            Catagory = "Category 4",
+            CatagoryId = 4,
             ImageURL = "http://example.com/image4.jpg"
         };
 
@@ -241,6 +241,210 @@ public class ProductControllerTests
         Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
         Assert.AreEqual($"No ratings found for Product ID: {invalidProductId}", result.Value);
     }
+
+    [TestMethod]
+    public async Task SearchProducts_ExistingProducts_ReturnsOk()
+    {
+       
+        var searchWord = "Tire";
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        _context.ChangeTracker.Clear();
+        if (!_context.Products.Any(p => p.ProductName == "Left Tire"))
+        {
+            _context.Products.AddRange(new List<Product>
+        {
+            new Product { Id = 101, ProductName = "Left Tire" },
+            new Product { Id = 102, ProductName = "Sink Plunger" }
+        });
+
+            await _context.SaveChangesAsync();
+        }
+
+        
+        var actionResult = await _controller.SearchProducts(searchWord);
+        var result = actionResult.Result as OkObjectResult;
+
+       
+        Assert.IsNotNull(result, "Expected OkObjectResult but got null.");
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        var products = result.Value as IEnumerable<Product>;
+        Assert.IsNotNull(products, "Expected a list of products but got null.");
+        Assert.IsTrue(products.Any(p => p.ProductName.Contains("Tire")), "Expected at least one product containing 'Tire'.");
+    }
+
+
+
+    [TestMethod]
+    public async Task SearchProducts_EmptySearchWord_ReturnsBadRequest()
+    {
+       
+        var searchWord = string.Empty;
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        var actionResult = await _controller.SearchProducts(searchWord);
+        var result = actionResult.Result as BadRequestObjectResult;
+
+        
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual("searchWord must not be empty", result.Value);
+    }
+
+    [TestMethod]
+    public async Task SearchProducts_NonExistentSearchWord_ReturnsNotFound()
+    {
+        var searchWord = "NonMatchingSearch";
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        
+        var actionResult = await _controller.SearchProducts(searchWord);
+        var result = actionResult.Result as NotFoundObjectResult;
+    
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual($"No products found matching the searchWord '{searchWord}'", result.Value);
+    }
+
+    [TestMethod]
+    public async Task SearchProductsByCategory_ValidCategory_ReturnsOk()
+    {
+        
+        var categoryName = "Electronics";
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+       
+        _context.ChangeTracker.Clear();
+        var category = new Category
+        {
+            Id = 1,
+            CategoryName = categoryName,
+            Description = "Category for electronic items." 
+        };
+        _context.Categories.Add(category);
+
+        _context.Products.AddRange(new List<Product>
+    {
+        new Product { Id = 101, ProductName = "Smartphone", CatagoryId = category.Id },
+        new Product { Id = 102, ProductName = "Laptop", CatagoryId = category.Id }
+    });
+
+        await _context.SaveChangesAsync();
+
+        
+        var actionResult = await _controller.SearchProductsByCategory(categoryName);
+        var result = actionResult.Result as OkObjectResult;
+
+     
+        Assert.IsNotNull(result, "Expected OkObjectResult but got null.");
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        var products = result.Value as IEnumerable<Product>;
+        Assert.IsNotNull(products, "Expected a list of products but got null.");
+        Assert.IsTrue(products.Any(), "Expected products but found none.");
+        Assert.IsTrue(products.All(p => p.CatagoryId == category.Id), "All products should belong to the specified category.");
+    }
+
+
+    [TestMethod]
+    public async Task SearchProductsByCategory_EmptyCategoryName_ReturnsBadRequest()
+    {
+        
+        var categoryName = string.Empty;
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        var actionResult = await _controller.SearchProductsByCategory(categoryName);
+        var result = actionResult.Result as BadRequestObjectResult;
+
+        
+        Assert.IsNotNull(result, "Expected BadRequestObjectResult but got null.");
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual("Category name must not be empty", result.Value);
+    }
+
+    [TestMethod]
+    public async Task SearchProductsByCategory_NonExistentCategory_ReturnsNotFound()
+    {
+        
+        var categoryName = "NonExistentCategory";
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        _context.ChangeTracker.Clear();
+        _context.Categories.Add(new Category
+        {
+            Id = 1,
+            CategoryName = "Electronics",
+            Description = "Category for electronic items." 
+        });
+        await _context.SaveChangesAsync();
+
+        
+        var actionResult = await _controller.SearchProductsByCategory(categoryName);
+        var result = actionResult.Result as NotFoundObjectResult;
+
+        
+        Assert.IsNotNull(result, "Expected NotFoundObjectResult but got null.");
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual($"No category found with the name '{categoryName}'", result.Value);
+    }
+
+
+    [TestMethod]
+    public async Task SearchProductsByCategory_EmptyProductsInCategory_ReturnsNotFound()
+    {
+        
+        var categoryName = "EmptyCategory";
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        _context.ChangeTracker.Clear();
+        var category = new Category
+        {
+            Id = 5,
+            CategoryName = categoryName,
+            Description = "This is a test category with no products." 
+        };
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+
+        
+        var existingProducts = _context.Products.Where(p => p.CatagoryId == category.Id).ToList();
+        Assert.IsFalse(existingProducts.Any(), "Expected no products in the category, but found some.");
+
+        var actionResult = await _controller.SearchProductsByCategory(categoryName);
+        var result = actionResult.Result as NotFoundObjectResult;
+
+        Assert.IsNotNull(result, "Expected NotFoundObjectResult but got null.");
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual($"No products found in the category '{categoryName}'", result.Value);
+    }
+
+
+
+
 
 
 

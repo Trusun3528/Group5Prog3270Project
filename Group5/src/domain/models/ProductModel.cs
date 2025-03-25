@@ -16,8 +16,7 @@ public class Product
     public string? ProductDescription { get; set; }
     [Required]
     public int Stock { get; set; }
-    [MaxLength(50)]
-    public string? Catagory { get; set; }
+    public int CatagoryId { get; set; }
     [MaxLength(500)]
     public string? ImageURL { get; set; }
     public double Rating { get; set; }
