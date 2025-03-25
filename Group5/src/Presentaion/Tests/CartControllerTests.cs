@@ -27,7 +27,7 @@ public class CartControllerTests
         _logger = new LoggerFactory().CreateLogger<ProductController>();
         _controller = new CartController(_context, _logger);
 
-        // Seed the database with test data
+        
         _context.Carts.Add(new Cart { Id = 1, UserId = 1 });
         _context.Carts.Add(new Cart { Id = 2, UserId = 2 });
 
@@ -51,7 +51,7 @@ public class CartControllerTests
     [TestMethod]
     public async Task AddCart_ValidCart_ReturnsOk()
     {
-        // Arrange
+       
         var newCart = new Cart
         {
             Id = 3,
@@ -59,10 +59,10 @@ public class CartControllerTests
             TotalAmount = 100.00m
         };
 
-        // Act
+        
         var result = await _controller.AddCart(newCart);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result.Result, typeof(ObjectResult));
     }
 }

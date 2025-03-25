@@ -165,5 +165,66 @@ namespace Group5.src.Presentaion.Controllers
             _logger.LogInformation("Product deleted");
             return Ok($"Product with id {id} has been deleted");
         }
+
+        [HttpPost("AddRating")]
+        public async Task<ActionResult> AddRating([FromBody] Rating rating)
+        {
+            _logger.LogInformation("Start of AddRatingWithComment");
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Rating body does not match the model");
+                return BadRequest(ModelState);
+            }
+
+            //Adds the rating
+            _context.Ratings.Add(rating);
+            _logger.LogInformation("Saved Rating");
+
+            // Saves the changes
+            await _context.SaveChangesAsync();
+
+            //Gets the updated average rating
+            var productRatings = _context.Ratings
+                .Where(r => r.ProductId == rating.ProductId)
+                .Select(r => r.RatingNumber);
+
+            double averageRating = productRatings.Any() ? productRatings.Average() : 0.0;
+
+            //Updates the product rating
+            var productToUpdate = await _context.Products.FindAsync(rating.ProductId);
+            if (productToUpdate != null)
+            {
+                productToUpdate.Rating = averageRating;
+                _logger.LogInformation($"Updated Product ID {rating.ProductId} with new Rating: {averageRating}");
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                _logger.LogWarning($"Product ID {rating.ProductId} not found.");
+            }
+
+            //Returns the rating
+            return Ok(rating);
+        }
+
+        [HttpGet("GetRatingsByProduct/{productId}")]
+        public async Task<ActionResult<IEnumerable<Rating>>> GetRatingsByProduct(int productId)
+        {
+            _logger.LogInformation($"Fetching ratings for Product ID: {productId}");
+
+            var ratings = await _context.Ratings
+                .Where(r => r.ProductId == productId)
+                .ToListAsync();
+
+            if (ratings == null || !ratings.Any())
+            {
+                _logger.LogWarning($"No ratings found for Product ID: {productId}");
+                return NotFound($"No ratings found for Product ID: {productId}");
+            }
+
+            return Ok(ratings);
+        }
+
+
     }
 }
