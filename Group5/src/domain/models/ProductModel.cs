@@ -20,5 +20,6 @@ public class Product
     public string? Catagory { get; set; }
     [MaxLength(500)]
     public string? ImageURL { get; set; }
+    public double Rating { get; set; }
 
 }

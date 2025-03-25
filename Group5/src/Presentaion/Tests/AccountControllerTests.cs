@@ -43,7 +43,7 @@ public class AccountControllerTests
         {
             UserName = "Austin",
             Email = "acameron1391@conestogac.on.ca",
-            Password = "AdminPassword123" // Use the actual password before hashing
+            Password = "AdminPassword123"
         };
 
         var result = await _controller.CreateAccount(request) as OkObjectResult;

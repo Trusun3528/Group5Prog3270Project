@@ -23,7 +23,7 @@ public class CardControllerTests
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ProductController>();
         _controller = new CardController(_context, logger);
 
-        // Seed the database with test data
+        
         _context.Cards.Add(new Card { Id = 5, CreditCardNumber = "1234567890123456", ExpirationDate = new DateTime(2025, 12, 31), CVV = "123" });
         _context.Cards.Add(new Card { Id = 3, CreditCardNumber = "1234567890123456", ExpirationDate = new DateTime(2025, 12, 31), CVV = "123" });
 
@@ -33,7 +33,7 @@ public class CardControllerTests
     [TestMethod]
     public async Task GetCard_ValidId_ReturnsOk()
     {
-        // Seed the database with test data
+        
         var result = await _controller.GetCard(3);
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
