@@ -43,17 +43,17 @@ public class GeminiControllerTests
     [TestMethod]
     public async Task GetChatResponse_ReturnsOk()
     {
-        // Arrange
-        var userPrompt = new UserPrompt { Prompt = "Ttell me about the left tire" };
+        
+        var userPrompt = new UserPrompt { Prompt = "Tell me about the left tire" };
 
-        // Act
+        
         var result = await _controller.GetChatResponse(userPrompt);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         var okResult = result as OkObjectResult;
         Assert.IsNotNull(okResult.Value);
-        // Additional assertions can be added here based on the expected content of the response
+        
     }
 
 
@@ -63,14 +63,14 @@ public class GeminiControllerTests
     [TestMethod]
     public async Task GetChatResponse_ReturnsInternalServerError_OnException()
     {
-        // Arrange
+        
         var userPrompt = new UserPrompt { Prompt = "TestProduct" };
-        _dbContext.Dispose(); // Force an exception by disposing the context
+        _dbContext.Dispose(); 
 
-        // Act
+        
         var result = await _controller.GetChatResponse(userPrompt);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result, typeof(ObjectResult));
         var objectResult = result as ObjectResult;
         Assert.AreEqual(500, objectResult.StatusCode);

@@ -200,6 +200,9 @@ namespace Group5.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("Rating")
+                        .HasColumnType("REAL");
+
                     b.Property<int>("Stock")
                         .HasColumnType("INTEGER");
 
@@ -216,6 +219,7 @@ namespace Group5.Migrations
                             Price = 119.98999999999999,
                             ProductDescription = "Its a tire",
                             ProductName = "Left Tire",
+                            Rating = 0.0,
                             Stock = 100
                         },
                         new
@@ -226,8 +230,32 @@ namespace Group5.Migrations
                             Price = 29.989999999999998,
                             ProductDescription = "Plunge your sink",
                             ProductName = "Sink Plunger",
+                            Rating = 0.0,
                             Stock = 50
                         });
+                });
+
+            modelBuilder.Entity("Group5.src.domain.models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("RatingNumber")
+                        .HasColumnType("REAL");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.User", b =>

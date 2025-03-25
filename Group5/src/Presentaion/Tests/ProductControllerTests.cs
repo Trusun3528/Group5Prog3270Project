@@ -28,7 +28,7 @@ public class ProductControllerTests
         var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<ProductController>();
         _controller = new ProductController(_context, logger);
 
-        // Set the ControllerContext to avoid NullReferenceException
+        
         _controller = new ProductController(_context, logger)
         {
             ControllerContext = new ControllerContext
@@ -47,7 +47,7 @@ public class ProductControllerTests
     [TestMethod]
     public async Task AddProduct_ValidProduct_ReturnsOk()
     {
-        // Arrange
+        
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()
@@ -64,19 +64,19 @@ public class ProductControllerTests
             ImageURL = "http://example.com/image3.jpg"
         };
 
-        _controller.ModelState.Clear(); // Ensure ModelState is valid
+        _controller.ModelState.Clear(); 
 
-        // Act
+        
         var result = await _controller.AddProduct(newProduct);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
 
     [TestMethod]
     public async Task AddProduct_InvalidProduct_ReturnsBadRequest()
     {
-        // Arrange
+        
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()
@@ -84,23 +84,23 @@ public class ProductControllerTests
 
         var invalidProduct = new Product
         {
-            Id = 0, // Invalid value
-            ProductName = "", // Invalid: Name is empty
-            Price = -1.00, // Invalid: Price cannot be negative
+            Id = 0, 
+            ProductName = "", 
+            Price = -1.00, 
             ProductDescription = "Invalid Description",
-            Stock = -10, // Invalid: Stock cannot be negative
+            Stock = -10, 
             Catagory = "Category Invalid",
-            ImageURL = "" // Invalid: Missing image URL
+            ImageURL = "" 
         };
 
         _controller.ModelState.AddModelError("ProductName", "Product Name is required");
         _controller.ModelState.AddModelError("Price", "Price must be non-negative");
         _controller.ModelState.AddModelError("Stock", "Stock must be non-negative");
 
-        // Act
+        
         var result = await _controller.AddProduct(invalidProduct);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
     }
 
@@ -166,4 +166,84 @@ public class ProductControllerTests
         var result = await _controller.DeleteProduct(99);
         Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
     }
+
+    [TestMethod]
+    public async Task AddRating_ValidRating_ReturnsOk()
+    {
+        // Arrange
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var newRating = new Rating
+        {
+            Id = 1,
+            ProductId = 10,
+            UserId = 5,
+            RatingNumber = 4,
+            Comment = "Great product!"
+        };
+
+        _controller.ModelState.Clear();
+
+        // Act
+        var result = await _controller.AddRating(newRating);
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+    }
+
+    [TestMethod]
+    public async Task GetRatingsForProduct_ValidProductId_ReturnsOk()
+    {
+        // Arrange
+        var productId = 1; 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        _context.Ratings.AddRange(new List<Rating>
+        {
+        new Rating { Id = 1, ProductId = productId, UserId = 1, RatingNumber = 5, Comment = "Excellent!" }
+        });
+
+        await _context.SaveChangesAsync();
+        // Act
+        var actionResult = await _controller.GetRatingsByProduct(productId);
+        var result = actionResult.Result as OkObjectResult;
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        var ratings = result.Value as IEnumerable<Rating>;
+        Assert.IsNotNull(ratings);
+        Assert.IsTrue(ratings.Any()); 
+    }
+
+    [TestMethod]
+    public async Task GetRatingsForProduct_InvalidProductId_ReturnsNotFound()
+    {
+        
+        var invalidProductId = -1; 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        
+        var actionResult = await _controller.GetRatingsByProduct(invalidProductId);
+        var result = actionResult.Result as NotFoundObjectResult;
+
+        
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual($"No ratings found for Product ID: {invalidProductId}", result.Value);
+    }
+
+
+
+
+
 }
