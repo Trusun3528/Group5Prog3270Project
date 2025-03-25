@@ -121,9 +121,9 @@ namespace Group5.src.Presentaion.Controllers
             {
                 product.Stock = editedProduct.Stock;
             }
-            if (!string.IsNullOrEmpty(editedProduct.Catagory))
+            if (editedProduct.CatagoryId > 0)
             {
-                product.Catagory = editedProduct.Catagory;
+                product.CatagoryId = editedProduct.CatagoryId;
             }
             if (!string.IsNullOrEmpty(editedProduct.ImageURL))
             {
@@ -176,11 +176,11 @@ namespace Group5.src.Presentaion.Controllers
                 return BadRequest(ModelState);
             }
 
-            //Adds the rating
+            //adds the rating
             _context.Ratings.Add(rating);
             _logger.LogInformation("Saved Rating");
 
-            // Saves the changes
+            //saves the changes
             await _context.SaveChangesAsync();
 
             //Gets the updated average rating
@@ -190,7 +190,7 @@ namespace Group5.src.Presentaion.Controllers
 
             double averageRating = productRatings.Any() ? productRatings.Average() : 0.0;
 
-            //Updates the product rating
+            //updates the product rating
             var productToUpdate = await _context.Products.FindAsync(rating.ProductId);
             if (productToUpdate != null)
             {
@@ -212,10 +212,11 @@ namespace Group5.src.Presentaion.Controllers
         {
             _logger.LogInformation($"Fetching ratings for Product ID: {productId}");
 
+            //gets the ratings for the product
             var ratings = await _context.Ratings
                 .Where(r => r.ProductId == productId)
                 .ToListAsync();
-
+            //if no ratings are found
             if (ratings == null || !ratings.Any())
             {
                 _logger.LogWarning($"No ratings found for Product ID: {productId}");
@@ -224,6 +225,80 @@ namespace Group5.src.Presentaion.Controllers
 
             return Ok(ratings);
         }
+
+
+        
+        [HttpGet("SearchProducts")]
+        public async Task<ActionResult<IEnumerable<Product>>> SearchProducts([FromQuery] string searchWord)
+        {
+            //start
+            _logger.LogInformation("Start of SearchProducts");
+            
+            //If empty
+            if (string.IsNullOrEmpty(searchWord))
+            {
+                _logger.LogWarning("searchWord is empty");
+                return BadRequest("searchWord must not be empty");
+            }
+
+            //Searchs based on the searchWord, but it searchs for products like searchWord, not exact
+            var products = await _context.Products
+                .Where(p => EF.Functions.Like(p.ProductName, $"%{searchWord}%"))
+                .ToListAsync();
+
+            //If no products are found
+            if (products == null || !products.Any())
+            {
+                _logger.LogInformation("No products found matching the searchWord");
+                return NotFound($"No products found matching the searchWord '{searchWord}'");
+            }
+
+            _logger.LogInformation("Products found and returning results");
+            return Ok(products);
+        }
+
+        [HttpGet("SearchProductsByCategory")]
+        public async Task<ActionResult<IEnumerable<Product>>> SearchProductsByCategory([FromQuery] string categoryName)
+        {
+            //Start of SearchProductsByCategory
+            _logger.LogInformation("Start of SearchProductsByCategory");
+
+            //make sure category is not null or empty
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                _logger.LogWarning("categoryName is empty");
+                return BadRequest("Category name must not be empty");
+            }
+
+            //Find the category by name
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.CategoryName == categoryName);
+
+            //Check if category exists
+            if (category == null)
+            {
+                _logger.LogInformation($"No category found with the name '{categoryName}'");
+                return NotFound($"No category found with the name '{categoryName}'");
+            }
+
+            //get products in the category
+            var products = await _context.Products
+                .Where(p => p.CatagoryId == category.Id)
+                .ToListAsync();
+
+            //see if any products are found
+            if (!products.Any())
+            {
+                _logger.LogInformation($"No products found in the category '{categoryName}'");
+                return NotFound($"No products found in the category '{categoryName}'");
+            }
+
+            _logger.LogInformation("Products found and returning results");
+            return Ok(products);
+        }
+
+
+
 
 
     }

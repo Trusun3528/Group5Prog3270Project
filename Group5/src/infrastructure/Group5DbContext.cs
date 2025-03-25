@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Group5.src.domain.models; 
+using Group5.src.domain.models;
 
 namespace Group5.src.infrastructure
 {
@@ -21,6 +21,8 @@ namespace Group5.src.infrastructure
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,7 +36,7 @@ namespace Group5.src.infrastructure
                     Price = 119.99,
                     ProductDescription = "Its a tire",
                     Stock = 100,
-                    Catagory = "Car",
+                    CatagoryId = 1,
                     ImageURL = "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg"
                 },
                 new Product
@@ -44,7 +46,7 @@ namespace Group5.src.infrastructure
                     Price = 29.99,
                     ProductDescription = "Plunge your sink",
                     Stock = 50,
-                    Catagory = "Kitchen",
+                    CatagoryId = 2,
                     ImageURL = "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l"
                 });
 
@@ -65,6 +67,100 @@ namespace Group5.src.infrastructure
                     Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
                     Role = "User"
                 });
+
+            modelBuilder.Entity<Category>().HasData(
+                new Category
+                {
+                    Id = 1,
+                    CategoryName = "Auto",
+                    Description = "Auto Parts"
+                },
+                new Category
+                {
+                    Id = 2,
+                    CategoryName = "Kitchen",
+                    Description = "Kitchen Stuff"
+                },
+                new Category
+                {
+                    Id = 3,
+                    CategoryName = "Electronics",
+                    Description = "Devices"
+                },
+                new Category
+                {
+                    Id = 4,
+                    CategoryName = "Books",
+                    Description = "Books!"
+                },
+                new Category
+                {
+                    Id = 5,
+                    CategoryName = "Furniture",
+                    Description = "Furniture Stuff"
+                },
+                new Category
+                {
+                    Id = 6,
+                    CategoryName = "Clothing",
+                    Description = "Clothing Stuff"
+                },
+                new Category
+                {
+                    Id = 7,
+                    CategoryName = "Sports",
+                    Description = "Sporting Goods"
+                },
+                new Category
+                {
+                    Id = 8,
+                    CategoryName = "Toys",
+                    Description = "Toys and Games"
+                },
+                new Category
+                {
+                    Id = 9,
+                    CategoryName = "Beauty",
+                    Description = "Beauty Products"
+                },
+                new Category
+                {
+                    Id = 10,
+                    CategoryName = "Health",
+                    Description = "Health Products"
+                },
+                new Category
+                {
+                    Id = 11,
+                    CategoryName = "Groceries",
+                    Description = "Food and Beverages"
+                },
+                new Category
+                {
+                    Id = 12,
+                    CategoryName = "Garden",
+                    Description = "Gardening Tools"
+                },
+                new Category
+                {
+                    Id = 13,
+                    CategoryName = "Pets",
+                    Description = "Pet Products"
+                },
+                new Category
+                {
+                    Id = 14,
+                    CategoryName = "Office",
+                    Description = "Office Supplies"
+                },
+                new Category
+                {
+                    Id = 15,
+                    CategoryName = "Travel",
+                    Description = "Travel Gear"
+                }
+            );
+
         }
         public virtual DbSet<Card> GetCards() => Cards;
     }
