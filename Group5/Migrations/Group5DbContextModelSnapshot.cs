@@ -121,6 +121,117 @@ namespace Group5.Migrations
                     b.ToTable("CartItems");
                 });
 
+            modelBuilder.Entity("Group5.src.domain.models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryName = "Auto",
+                            Description = "Auto Parts"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryName = "Kitchen",
+                            Description = "Kitchen Stuff"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryName = "Electronics",
+                            Description = "Devices"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryName = "Books",
+                            Description = "Books!"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryName = "Furniture",
+                            Description = "Furniture Stuff"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryName = "Clothing",
+                            Description = "Clothing Stuff"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryName = "Sports",
+                            Description = "Sporting Goods"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryName = "Toys",
+                            Description = "Toys and Games"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryName = "Beauty",
+                            Description = "Beauty Products"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryName = "Health",
+                            Description = "Health Products"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryName = "Groceries",
+                            Description = "Food and Beverages"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryName = "Garden",
+                            Description = "Gardening Tools"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryName = "Pets",
+                            Description = "Pet Products"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CategoryName = "Office",
+                            Description = "Office Supplies"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CategoryName = "Travel",
+                            Description = "Travel Gear"
+                        });
+                });
+
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -180,9 +291,8 @@ namespace Group5.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Catagory")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CatagoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ImageURL")
                         .HasMaxLength(500)
@@ -214,7 +324,7 @@ namespace Group5.Migrations
                         new
                         {
                             Id = 1,
-                            Catagory = "Car",
+                            CatagoryId = 1,
                             ImageURL = "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg",
                             Price = 119.98999999999999,
                             ProductDescription = "Its a tire",
@@ -225,7 +335,7 @@ namespace Group5.Migrations
                         new
                         {
                             Id = 2,
-                            Catagory = "Kitchen",
+                            CatagoryId = 2,
                             ImageURL = "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l",
                             Price = 29.989999999999998,
                             ProductDescription = "Plunge your sink",

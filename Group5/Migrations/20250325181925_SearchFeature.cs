@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class Ratings : Migration
+    public partial class SearchFeature : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,20 @@ namespace Group5.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CategoryName = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -41,7 +55,7 @@ namespace Group5.Migrations
                     Price = table.Column<double>(type: "decimal(18,2)", nullable: true),
                     ProductDescription = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
                     Stock = table.Column<int>(type: "INTEGER", nullable: false),
-                    Catagory = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    CatagoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     ImageURL = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     Rating = table.Column<double>(type: "REAL", nullable: false)
                 },
@@ -204,12 +218,34 @@ namespace Group5.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "Id", "Catagory", "ImageURL", "Price", "ProductDescription", "ProductName", "Rating", "Stock" },
+                table: "Categories",
+                columns: new[] { "Id", "CategoryName", "Description" },
                 values: new object[,]
                 {
-                    { 1, "Car", "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg", 119.98999999999999, "Its a tire", "Left Tire", 0.0, 100 },
-                    { 2, "Kitchen", "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l", 29.989999999999998, "Plunge your sink", "Sink Plunger", 0.0, 50 }
+                    { 1, "Auto", "Auto Parts" },
+                    { 2, "Kitchen", "Kitchen Stuff" },
+                    { 3, "Electronics", "Devices" },
+                    { 4, "Books", "Books!" },
+                    { 5, "Furniture", "Furniture Stuff" },
+                    { 6, "Clothing", "Clothing Stuff" },
+                    { 7, "Sports", "Sporting Goods" },
+                    { 8, "Toys", "Toys and Games" },
+                    { 9, "Beauty", "Beauty Products" },
+                    { 10, "Health", "Health Products" },
+                    { 11, "Groceries", "Food and Beverages" },
+                    { 12, "Garden", "Gardening Tools" },
+                    { 13, "Pets", "Pet Products" },
+                    { 14, "Office", "Office Supplies" },
+                    { 15, "Travel", "Travel Gear" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "CatagoryId", "ImageURL", "Price", "ProductDescription", "ProductName", "Rating", "Stock" },
+                values: new object[,]
+                {
+                    { 1, 1, "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg", 119.98999999999999, "Its a tire", "Left Tire", 0.0, 100 },
+                    { 2, 2, "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l", 29.989999999999998, "Plunge your sink", "Sink Plunger", 0.0, 50 }
                 });
 
             migrationBuilder.InsertData(
@@ -268,6 +304,9 @@ namespace Group5.Migrations
 
             migrationBuilder.DropTable(
                 name: "CartItems");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
