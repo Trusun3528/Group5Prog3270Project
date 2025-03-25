@@ -61,7 +61,7 @@ namespace Group5.src.Presentaion.Controllers
 
                 //Gets the respons from the ai
                 var aiResponse = await _chatService.GetChatMessageContentAsync(FinalPrompt);
-                return Ok(new { Response = aiResponse });
+                return Ok(new { Response = aiResponse.Content });
 
 
             }
