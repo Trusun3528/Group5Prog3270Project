@@ -63,6 +63,25 @@ app.UseRouting();
 
 app.UseCors(MyAllowSpecificOrigins);
 
+// Add to Program.cs or Startup.cs
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ?? "UdqytHqwif2VWb7iKp9EC4GSt0onIyPe")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// Add before app.UseAuthorization()
+app.UseAuthentication();
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
