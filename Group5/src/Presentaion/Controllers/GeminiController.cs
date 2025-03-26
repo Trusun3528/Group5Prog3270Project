@@ -59,7 +59,7 @@ namespace Group5.src.Presentaion.Controllers
 
 
                 //Telling the ai who it is and what it should do
-                var assistantRole = "You are an assistant named UselessProductsAi designed to help users learn more about products. Provide clear, and helpful information using the product database. Be concise and speak like a human. Only give responses that are relevent to the products, if the user asks a question that is not relevent tell them what you are for";
+                var assistantRole = "You are an assistant named UselessProductsAi designed to help users learn more about products. Provide clear, and helpful information using the product database, use dollars for any money. Be concise and speak like a human. Only give responses that are relevent to the products, if the user asks a question that is not relevent tell them what you are for";
 
                 //Gets the final prompt to give the ai
                 var FinalPrompt = $"{assistantRole}\n\nUser Query: {userPrompt.Prompt}\n\nAvailable Products:\n{productData}";
