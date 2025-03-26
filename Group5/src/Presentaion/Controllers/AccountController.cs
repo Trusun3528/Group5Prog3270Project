@@ -97,59 +97,72 @@ namespace Group5.src.Presentaion.Controllers
         [HttpPost("SignInAccount")]
         public async Task<ActionResult> SignInAccount([FromBody] SignInModel request)
         {
-            _logger.LogInformation("sign in started");
+            _logger.LogInformation("Sign in started");
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)
             {
-                _logger.LogWarning("Invalid Sign in");
-                return Unauthorized("Invalid Sign in");
+                _logger.LogWarning("Invalid sign in - user not found");
+                return Unauthorized("Invalid email or password");
             }
-            //encryps the password for verification
-            bool encryptPassword = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
 
-
-            if (!encryptPassword)
+            bool passwordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+            if (!passwordValid)
             {
-                _logger.LogWarning("Invalid Sign in");
-                return Unauthorized("Invalid Sign in.");
+                _logger.LogWarning("Invalid sign in - password mismatch");
+                return Unauthorized("Invalid email or password");
             }
 
-            //creates a token handler
+            // Creates a token handler
             var tokenHandler = new JwtSecurityTokenHandler();
-            //used to sign the token
-            var key = Encoding.ASCII.GetBytes("UdqytHqwif2VWb7iKp9EC4GSt0onIyPe");
+            // Used to sign the token - this should be in your configuration
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"] ?? "UdqytHqwif2VWb7iKp9EC4GSt0onIyPe");
 
-            //creates the token discriptor
+            // Creates the token descriptor with user claims
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email)
-
-            }),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
+                }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
-            //creates the token
+
+            // Creates and writes the token
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            //writes the token
             var tokenString = tokenHandler.WriteToken(token);
-            _logger.LogInformation($"Token created {token}");
-            //returns the user, and token if verified
-            return Ok(new { Message = "Sign-in successful.", User = user, Token = tokenString });
+
+            _logger.LogInformation($"User {user.Email} successfully authenticated");
+
+            // Returns user info and token
+            return Ok(new
+            {
+                Message = "Sign-in successful",
+                User = new
+                {
+                    user.Id,
+                    user.UserName,
+                    user.Email,
+                    user.Role
+                },
+                Token = tokenString
+            });
         }
         //signs out the user
         [HttpPost("SignOutAccount")]
+        [Authorize] 
         public ActionResult SignOutAccount()
         {
-            _logger.LogInformation("Signout started");
-            //HttpContext.Session.Clear();
-            _logger.LogInformation("Signout end");
-            return Ok(new { Message = "Sign out done" });
-            
+            _logger.LogInformation("Signout request received");
+
+            _logger.LogInformation("Signout completed");
+            return Ok(new { Message = "Sign out successful. Please discard your token." });
         }
 
         [Authorize]
