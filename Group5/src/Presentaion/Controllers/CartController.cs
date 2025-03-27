@@ -70,10 +70,6 @@ namespace Group5.src.Presentaion.Controllers
         }
 
 
-
-
-
-
         //gets all the carts
         [HttpGet("GetCarts")]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
@@ -86,7 +82,7 @@ namespace Group5.src.Presentaion.Controllers
         }
 
         //gets one of the carts
-        [HttpGet("GetCarts/{id}")]
+        [HttpGet("GetCart/{id}")]
         public async Task<ActionResult<Product>> GetCarts(int id)
         {
             _logger.LogInformation("start getcarts");
