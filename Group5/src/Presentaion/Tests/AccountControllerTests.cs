@@ -165,4 +165,62 @@ public class AccountControllerTests
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         Assert.AreEqual(200, ((OkObjectResult)result.Result).StatusCode);
     }
+
+    [TestMethod]
+    public async Task SignInAccount_ShouldReturnUnauthorized_WhenUserNotFound()
+    {
+        var request = new SignInModel
+        {
+            Email = "nonexistentuser@example.com",
+            Password = "WrongPassword"
+        };
+
+        var result = await _controller.SignInAccount(request) as UnauthorizedObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(401, result.StatusCode);
+        Assert.AreEqual("Invalid email or password", result.Value);
+    }
+
+    [TestMethod]
+    public async Task SignInAccount_ShouldReturnUnauthorized_WhenPasswordIsIncorrect()
+    {
+        var user = new User
+        {
+            UserName = "testuser",
+            Email = "testuser@example.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("CorrectPassword"),
+            Role = "Customer"
+        };
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        var request = new SignInModel
+        {
+            Email = "testuser@example.com",
+            Password = "WrongPassword"
+        };
+
+        var result = await _controller.SignInAccount(request) as UnauthorizedObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(401, result.StatusCode);
+        Assert.AreEqual("Invalid email or password", result.Value);
+    }
+
+    [TestMethod]
+    public async Task EditAddress_ShouldReturnNotFound_WhenAddressNotFound()
+    {
+        var editAddress = new Address
+        {
+            city = "Updated City"
+        };
+
+        var result = await _controller.EditAddress(999, editAddress) as NotFoundObjectResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(404, result.StatusCode);
+        Assert.AreEqual("Address not found", result.Value);
+    }
+
 }

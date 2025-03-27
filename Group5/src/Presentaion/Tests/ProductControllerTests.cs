@@ -37,7 +37,7 @@ public class ProductControllerTests
             }
         };
 
-        // Seed the database with test data
+        
         _context.Products.Add(new Product { Id = 1, ProductName = "Test Product 1", Price = 10.00, ProductDescription = "Description 1", Stock = 100, CatagoryId = 1, ImageURL = "http://example.com/image1.jpg" });
         _context.Products.Add(new Product { Id = 2, ProductName = "Test Product 2", Price = 20.00, ProductDescription = "Description 2", Stock = 200, CatagoryId = 2, ImageURL = "http://example.com/image2.jpg" });
 
@@ -170,7 +170,7 @@ public class ProductControllerTests
     [TestMethod]
     public async Task AddRating_ValidRating_ReturnsOk()
     {
-        // Arrange
+       
         _controller.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext()
@@ -187,17 +187,17 @@ public class ProductControllerTests
 
         _controller.ModelState.Clear();
 
-        // Act
+        
         var result = await _controller.AddRating(newRating);
 
-        // Assert
+        
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
     }
 
     [TestMethod]
     public async Task GetRatingsForProduct_ValidProductId_ReturnsOk()
     {
-        // Arrange
+       
         var productId = 1; 
         _controller.ControllerContext = new ControllerContext
         {
@@ -210,11 +210,11 @@ public class ProductControllerTests
         });
 
         await _context.SaveChangesAsync();
-        // Act
+        
         var actionResult = await _controller.GetRatingsByProduct(productId);
         var result = actionResult.Result as OkObjectResult;
 
-        // Assert
+        
         Assert.IsNotNull(result);
         Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         var ratings = result.Value as IEnumerable<Rating>;
@@ -442,6 +442,86 @@ public class ProductControllerTests
         Assert.AreEqual($"No products found in the category '{categoryName}'", result.Value);
     }
 
+    [TestMethod]
+    public async Task EditProduct_ModelStateError_ReturnsBadRequest()
+    {
+        // Arrange
+        var invalidProduct = new Product
+        {
+            ProductName = "", 
+            Price = -1.00, 
+            ProductDescription = "Invalid Description",
+            Stock = -10, 
+            CatagoryId = 10000000,
+            ImageURL = "" 
+        };
+
+        _controller.ModelState.AddModelError("ProductName", "Product Name is required");
+        _controller.ModelState.AddModelError("Price", "Price must be non-negative");
+        _controller.ModelState.AddModelError("Stock", "Stock must be non-negative");
+
+        
+        var result = await _controller.EditProduct(1, invalidProduct);
+
+        
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+    }
+
+    [TestMethod]
+    public async Task AddRating_InvalidModelState_ReturnsBadRequest()
+    {
+       
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var invalidRating = new Rating
+        {
+            Id = 1,
+            ProductId = 10,
+            UserId = 5,
+            RatingNumber = 6,
+            Comment = "Great product!"
+        };
+
+        _controller.ModelState.AddModelError("RatingNumber", "RatingNumber must be between 1 and 5");
+
+        
+        var result = await _controller.AddRating(invalidRating);
+
+        
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+    }
+
+    [TestMethod]
+    public async Task AddRating_InvalidProductId_ReturnsNotFound()
+    {
+        
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var invalidRating = new Rating
+        {
+            Id = 1,
+            ProductId = 999,
+            UserId = 5,
+            RatingNumber = 4,
+            Comment = "Great product!"
+        };
+
+        _controller.ModelState.Clear();
+
+        
+        var result = await _controller.AddRating(invalidRating);
+
+       
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        var notFoundResult = result as NotFoundObjectResult;
+        Assert.AreEqual($"Product with ID {invalidRating.ProductId} not found.", notFoundResult.Value);
+    }
 
 
 

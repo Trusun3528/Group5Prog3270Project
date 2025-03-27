@@ -34,11 +34,12 @@ namespace Group5.src.Presentaion.Controllers
             {
                 _logger.LogInformation("start addcart");
 
-                if (!TryValidateModel(cart))
+                if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Cart body does not match the model");
                     return BadRequest(ModelState);
                 }
+
                 //makes sure the user exists
                 var user = await _context.Users.Include(u => u.Carts).FirstOrDefaultAsync(u => u.Id == cart.UserId);
                 if (user == null)
@@ -79,7 +80,6 @@ namespace Group5.src.Presentaion.Controllers
         public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
         {
             _logger.LogInformation("start getcarts");
-            var Id = User.Identity.Name;
             var carts = await _context.Carts.ToListAsync();
             
             return Ok(carts);
@@ -130,7 +130,7 @@ namespace Group5.src.Presentaion.Controllers
             {
                 _logger.LogInformation("started addcartitem");
 
-                if (!TryValidateModel(cartItem))
+                if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("cartitem body does not match the model");
                     return BadRequest(ModelState);
@@ -181,7 +181,7 @@ namespace Group5.src.Presentaion.Controllers
             var cartItems = await _context.CartItems
                 .Where(C => C.CartID == id)
                 .ToListAsync();
-            if(cartItems == null)
+            if (cartItems == null || !cartItems.Any())
             {
                 _logger.LogWarning($"Cart item with the id of {id} not found");
                 return NotFound($"Cart item with the id of {id} not found");
@@ -231,16 +231,16 @@ namespace Group5.src.Presentaion.Controllers
 
         //edit a cart items
         [HttpPut("EditCartItem/{id}")]
-        public async Task<ActionResult> EditCartItem(int id, [FromBody] dynamic editedCartItemJson)
+        public async Task<ActionResult> EditCartItem(int id, [FromBody] CartItem editedCartItem)
         {
             _logger.LogInformation("editcaritem started");
-            var editedCartItem = JsonConvert.DeserializeObject<CartItem>(editedCartItemJson.ToString());
 
-            if (!TryValidateModel(editedCartItem))
+            if (!ModelState.IsValid)
             {
                 _logger.LogInformation("cartitem body does not match the model");
                 return BadRequest(ModelState);
             }
+
             //Finds the product
             var cartItem = await _context.CartItems.FindAsync(id);
 
@@ -250,6 +250,7 @@ namespace Group5.src.Presentaion.Controllers
                 //returns if not found
                 return NotFound($"Cart Item with id {id} not found");
             }
+
             //checks to see if the product exists and get the info
             var product = await _context.Products.FindAsync(cartItem.ProductID);
             if (product == null)
@@ -259,13 +260,12 @@ namespace Group5.src.Presentaion.Controllers
             }
 
             //updates the product
-            if (!string.IsNullOrEmpty(editedCartItem.Quantity))
+            if (editedCartItem.Quantity > 0)
             {
                 cartItem.Quantity = editedCartItem.Quantity;
             }
 
             cartItem.Price = product.Price * cartItem.Quantity;
-
 
             _context.Entry(cartItem).State = EntityState.Modified;
             _logger.LogInformation("editcaritem ended");
