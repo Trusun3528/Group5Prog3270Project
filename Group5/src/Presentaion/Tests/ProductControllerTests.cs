@@ -179,7 +179,7 @@ public class ProductControllerTests
         var newRating = new Rating
         {
             Id = 1,
-            ProductId = 10,
+            ProductId = 1,
             UserId = 5,
             RatingNumber = 4,
             Comment = "Great product!"
