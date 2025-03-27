@@ -24,10 +24,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy  =>
                       {
-                          policy.WithOrigins("http://localhost:5173")
-                          .AllowAnyHeader() // Allows headers like Authorization, Content-Type, etc.
-                          .AllowAnyMethod() // Allows crud operations
-                          .AllowCredentials();
+                          policy.WithOrigins("http://localhost:5173");
                       });
 });
 
@@ -48,7 +45,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 
-// Add services to the container.
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -62,7 +59,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +74,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+
 
 
 // Add before app.UseAuthorization()
