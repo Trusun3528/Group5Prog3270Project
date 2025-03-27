@@ -69,7 +69,10 @@ namespace Group5.src.Presentaion.Controllers
             }
         }
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         //gets all the carts
         [HttpGet("GetCarts")]
         public async Task<ActionResult<IEnumerable<Cart>>> GetCarts()
@@ -82,18 +85,28 @@ namespace Group5.src.Presentaion.Controllers
         }
 
         //gets one of the carts
+<<<<<<< Updated upstream
         [HttpGet("GetCart/{id}")]
         public async Task<ActionResult<Product>> GetCarts(int id)
+=======
+        [HttpGet("GetCart/{Id}")]
+        public async Task<ActionResult<Cart>> GetCart(int id)
+>>>>>>> Stashed changes
         {
-            _logger.LogInformation("start getcarts");
-            var cart = await _context.Carts.FindAsync(id);
+            _logger.LogInformation($"Fetching cart with id {id}");
+
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (cart == null)
             {
-                _logger.LogWarning("Cart with that id does not exist");
+                _logger.LogWarning($"Cart with id {id} not found");
                 return NotFound($"Cart with id {id} not found");
             }
-            _logger.LogInformation("ended getcarts");
+
+            _logger.LogInformation("Successfully retrieved cart");
             return Ok(cart);
         }
 
@@ -118,53 +131,53 @@ namespace Group5.src.Presentaion.Controllers
         }
 
         //adds a item to a cart
-
         [HttpPost("AddCartItem")]
         public async Task<ActionResult<CartItem>> AddCartItem([FromBody] CartItem cartItem)
         {
-            try
+            if (cartItem == null)
             {
-                _logger.LogInformation("started addcartitem");
-
-                if (!TryValidateModel(cartItem))
-                {
-                    _logger.LogWarning("cartitem body does not match the model");
-                    return BadRequest(ModelState);
-                }
-
-                //sees if the cart exists
-                var cart = await _context.Carts.FindAsync(cartItem.CartID);
-                if (cart == null)
-                {
-                    _logger.LogWarning($"Cart with id {cartItem.CartID} not found");
-                    return NotFound($"Cart with id {cartItem.CartID} not found");
-                }
-
-                //sees if the product exists
-                var product = await _context.Products.FindAsync(cartItem.ProductID);
-                if (product == null)
-                {
-                    _logger.LogWarning($"Product with id {cartItem.ProductID} not found");
-                    return NotFound($"Product with id {cartItem.ProductID} not found");
-                }
-
-                //gets the price based on the product and the quantity
-                cartItem.Price = product.Price * cartItem.Quantity;
-                cartItem.Cart = cart;
-                cartItem.Product = product;
-
-                _context.CartItems.Add(cartItem);
-                _logger.LogInformation("end and saved cart item");
-                await _context.SaveChangesAsync();
-
-                return Ok(cartItem);
+                _logger.LogWarning("CartItem is null");
+                return BadRequest("CartItem is null");
             }
-            catch (Exception ex)
+
+            _logger.LogInformation("Start AddCartItem");
+
+            if (!ModelState.IsValid)
             {
-                //catches for and other errors
-                _logger.LogError(ex, "An error occurred while adding the cart item.");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogWarning("CartItem body does not match the model");
+                return BadRequest(ModelState);
             }
+
+            var cart = await _context.Carts.FindAsync(cartItem.CartID);
+            if (cart == null)
+            {
+                _logger.LogWarning($"Cart with ID {cartItem.CartID} not found");
+                return NotFound($"Cart with ID {cartItem.CartID} not found");
+            }
+
+            var product = await _context.Products.FindAsync(cartItem.ProductID);
+            if (product == null)
+            {
+                _logger.LogWarning($"Product with ID {cartItem.ProductID} not found");
+                return NotFound($"Product with ID {cartItem.ProductID} not found");
+            }
+
+            cartItem.Price = product.Price * cartItem.Quantity;
+
+            // Check if the product is already in the cart
+            var existingCartItem = await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartID == cartItem.CartID && ci.ProductID == cartItem.ProductID);
+            if (existingCartItem != null)
+            {
+                _logger.LogWarning("Product already in the cart");
+                return BadRequest("Product already in the cart.");
+            }
+
+            _context.CartItems.Add(cartItem);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Cart item added successfully");
+            return Ok(cartItem);
         }
 
 
