@@ -60,4 +60,54 @@ public class CardControllerTests
         var result = await _controller.EditCard(99, editCard);
         Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
     }
+
+    [TestMethod]
+    public async Task DeleteCard_ValidId_ReturnsOk()
+    {
+        var result = await _controller.DeleteCard(3);
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+    }
+
+    [TestMethod]
+    public async Task DeleteCard_InvalidId_ReturnsNotFound()
+    {
+        var result = await _controller.DeleteCard(1);
+        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+    }
+
+    [TestMethod]
+    public async Task CreateCard_ValidCard_ReturnsOK()
+    {
+        var newCard = new Card { CreditCardNumber = "8765438726351893", ExpirationDate = new DateTime(2026, 10, 25), CVV = "863" };
+        var result = await _controller.CreateCard(newCard);
+        Assert.IsInstanceOfType(result.Result, typeof(CreatedAtActionResult));
+    }
+
+    [TestMethod]
+    public async Task CreateCard_InvalidCard_ReturnsBadRequest()
+    {
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var invalidCard = new Card
+        {
+            Id = 0,
+            CreditCardNumber = "",
+            ExpirationDate = new DateTime(2000, 01, 01),
+            CVV = ""
+        };
+
+
+        _controller.ModelState.AddModelError("CreditCardNumber", "Credit Card Number is required");
+        _controller.ModelState.AddModelError("ExpirationDate", "Expiration date must be in the future");
+        _controller.ModelState.AddModelError("CVV", "CCV Number is Required");
+
+        var result = await _controller.CreateCard(invalidCard);
+
+
+        Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+    }
 }
