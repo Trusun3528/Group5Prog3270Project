@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class SearchFeature : Migration
+    public partial class moreItems : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -245,7 +245,17 @@ namespace Group5.Migrations
                 values: new object[,]
                 {
                     { 1, 1, "https://i5.walmartimages.com/seo/Goodyear-Reliant-All-Season-225-55R18-98V-All-Season-Tire_97e6df10-5771-4701-a040-6b6b015b3773.400874d938bd6a36e3391979ef30825f.jpeg", 119.98999999999999, "Its a tire", "Left Tire", 0.0, 100 },
-                    { 2, 2, "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l", 29.989999999999998, "Plunge your sink", "Sink Plunger", 0.0, 50 }
+                    { 2, 2, "https://images.homedepot.ca/productimages/p_1000514524.jpg?product-images=l", 29.989999999999998, "Plunge your sink", "Sink Plunger", 0.0, 50 },
+                    { 3, 10, "https://m.media-amazon.com/images/I/81en3yalOyL.jpg", 19.989999999999998, "This waterproof towel never needs washing!", "Waterproof Towel", 0.0, 18 },
+                    { 4, 12, "https://m.media-amazon.com/images/I/71JxuOqyiYL.jpg", 14.99, "A fantastic left-handed only hammer!", "Left Handed Hammer", 0.0, 2 },
+                    { 5, 2, "https://images-cdn.ubuy.co.in/652914fc6922273b68176c08-voysign-charcoal-bbq-grill-barrel-bbq.jpg", 189.99000000000001, "Enjoy some delicious food with a truly tropical twist!", "Underwater BBQ", 0.0, 17 },
+                    { 6, 2, "https://img.apmcdn.org/514b0eec7310ebc40d46d8f08b0ec4836f0398a2/square/9b4aab-20240226-matches-in-a-box-2000.jpg", 3.9900000000000002, "Perfect for the saftey conscientious!", "Fireproof Matches", 0.0, 42 },
+                    { 7, 1, "https://atlas-content-cdn.pixelsquid.com/stock-images/led-light-bulb-lightbulb-ENAno48-600.jpg", 14.99, "This incredible lightbulb can brighten any room!", "Glow-In-The-Dark™ Lightbulb", 0.0, 32 },
+                    { 8, 1, "https://m.media-amazon.com/images/I/41O3lGVtjML.jpg", 7.9900000000000002, "Never have to bother tying your laces again!", "Bluetooth Shoelaces", 0.0, 24 },
+                    { 9, 1, "https://media.istockphoto.com/id/467479468/photo/car-wheel.jpg?s=612x612&w=0&k=20&c=FVAl5bqn5DJAgEOQtt8Ca3Mb9Dzk0BqwTJ3SiQ3L3ts=", 114.98999999999999, "Its a square tire", "Square Tire", 0.0, 13 },
+                    { 10, 1, "https://workstuff.co.in/wp-content/uploads/2020/10/Workstuff_Office_Supplies_Office_Basics_Amos_Glue_Stick_15_Grams600x600.jpg", 4.9900000000000002, "Never get sticky fingers again!", "Non-Stick Glue", 0.0, 12 },
+                    { 11, 1, "https://imgs.michaels.com/MAM/assets/1/4498F4AD976B45D3A3FA77D38829F622/img/FB0B4E000A29494A8948C957B0F4CA20/D207038S_1.jpg", 99.989999999999995, "Find the comfort of a warm fireplace anywhere!", "Inflatable Fireplace", 0.0, 100 },
+                    { 12, 1, "https://urbanwoodcraft.com/wp-content/uploads/2023/07/CELINE-83%E2%80%B3-X-40%E2%80%B3-OVAL-MIRROR-BARN-DOOR.jpg", 49.990000000000002, "Great to see beyond the physical", "See-through Mirror", 0.0, 100 }
                 });
 
             migrationBuilder.InsertData(

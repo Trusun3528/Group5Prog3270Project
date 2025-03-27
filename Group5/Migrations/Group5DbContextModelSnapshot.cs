@@ -342,6 +342,116 @@ namespace Group5.Migrations
                             ProductName = "Sink Plunger",
                             Rating = 0.0,
                             Stock = 50
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CatagoryId = 10,
+                            ImageURL = "https://m.media-amazon.com/images/I/81en3yalOyL.jpg",
+                            Price = 19.989999999999998,
+                            ProductDescription = "This waterproof towel never needs washing!",
+                            ProductName = "Waterproof Towel",
+                            Rating = 0.0,
+                            Stock = 18
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CatagoryId = 12,
+                            ImageURL = "https://m.media-amazon.com/images/I/71JxuOqyiYL.jpg",
+                            Price = 14.99,
+                            ProductDescription = "A fantastic left-handed only hammer!",
+                            ProductName = "Left Handed Hammer",
+                            Rating = 0.0,
+                            Stock = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CatagoryId = 2,
+                            ImageURL = "https://images-cdn.ubuy.co.in/652914fc6922273b68176c08-voysign-charcoal-bbq-grill-barrel-bbq.jpg",
+                            Price = 189.99000000000001,
+                            ProductDescription = "Enjoy some delicious food with a truly tropical twist!",
+                            ProductName = "Underwater BBQ",
+                            Rating = 0.0,
+                            Stock = 17
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CatagoryId = 2,
+                            ImageURL = "https://img.apmcdn.org/514b0eec7310ebc40d46d8f08b0ec4836f0398a2/square/9b4aab-20240226-matches-in-a-box-2000.jpg",
+                            Price = 3.9900000000000002,
+                            ProductDescription = "Perfect for the saftey conscientious!",
+                            ProductName = "Fireproof Matches",
+                            Rating = 0.0,
+                            Stock = 42
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CatagoryId = 1,
+                            ImageURL = "https://atlas-content-cdn.pixelsquid.com/stock-images/led-light-bulb-lightbulb-ENAno48-600.jpg",
+                            Price = 14.99,
+                            ProductDescription = "This incredible lightbulb can brighten any room!",
+                            ProductName = "Glow-In-The-Dark™ Lightbulb",
+                            Rating = 0.0,
+                            Stock = 32
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CatagoryId = 1,
+                            ImageURL = "https://m.media-amazon.com/images/I/41O3lGVtjML.jpg",
+                            Price = 7.9900000000000002,
+                            ProductDescription = "Never have to bother tying your laces again!",
+                            ProductName = "Bluetooth Shoelaces",
+                            Rating = 0.0,
+                            Stock = 24
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CatagoryId = 1,
+                            ImageURL = "https://media.istockphoto.com/id/467479468/photo/car-wheel.jpg?s=612x612&w=0&k=20&c=FVAl5bqn5DJAgEOQtt8Ca3Mb9Dzk0BqwTJ3SiQ3L3ts=",
+                            Price = 114.98999999999999,
+                            ProductDescription = "Its a square tire",
+                            ProductName = "Square Tire",
+                            Rating = 0.0,
+                            Stock = 13
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CatagoryId = 1,
+                            ImageURL = "https://workstuff.co.in/wp-content/uploads/2020/10/Workstuff_Office_Supplies_Office_Basics_Amos_Glue_Stick_15_Grams600x600.jpg",
+                            Price = 4.9900000000000002,
+                            ProductDescription = "Never get sticky fingers again!",
+                            ProductName = "Non-Stick Glue",
+                            Rating = 0.0,
+                            Stock = 12
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CatagoryId = 1,
+                            ImageURL = "https://imgs.michaels.com/MAM/assets/1/4498F4AD976B45D3A3FA77D38829F622/img/FB0B4E000A29494A8948C957B0F4CA20/D207038S_1.jpg",
+                            Price = 99.989999999999995,
+                            ProductDescription = "Find the comfort of a warm fireplace anywhere!",
+                            ProductName = "Inflatable Fireplace",
+                            Rating = 0.0,
+                            Stock = 100
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CatagoryId = 1,
+                            ImageURL = "https://urbanwoodcraft.com/wp-content/uploads/2023/07/CELINE-83%E2%80%B3-X-40%E2%80%B3-OVAL-MIRROR-BARN-DOOR.jpg",
+                            Price = 49.990000000000002,
+                            ProductDescription = "Great to see beyond the physical",
+                            ProductName = "See-through Mirror",
+                            Rating = 0.0,
+                            Stock = 100
                         });
                 });
 
