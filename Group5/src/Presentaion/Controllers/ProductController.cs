@@ -201,6 +201,7 @@ namespace Group5.src.Presentaion.Controllers
             else
             {
                 _logger.LogWarning($"Product ID {rating.ProductId} not found.");
+                return NotFound($"Product with ID {rating.ProductId} not found.");
             }
 
             //Returns the rating
@@ -296,6 +297,8 @@ namespace Group5.src.Presentaion.Controllers
             _logger.LogInformation("Products found and returning results");
             return Ok(products);
         }
+
+
 
 
 
