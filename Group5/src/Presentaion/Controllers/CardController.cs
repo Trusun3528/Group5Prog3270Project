@@ -71,5 +71,44 @@ namespace Group5.src.Presentaion.Controllers
             _logger.LogInformation("GetCard ends");
             return Ok(card);
         }
+
+        [Authorize]
+        [HttpDelete("DeleteCard/{id}")]
+        public async Task<IActionResult> DeleteCard(int id)
+        {
+            _logger.LogInformation("DeleteCard starts");
+            var card = await _context.Cards.FindAsync(id);
+
+            if (card == null)
+            {
+                _logger.LogInformation($"Card with id {id} not found");
+                return NotFound($"Card with id {id} not found");
+            }
+
+            _context.Cards.Remove(card);
+            await _context.SaveChangesAsync();
+
+            return Ok("Card removed succesfully");
+        }
+
+        [Authorize]
+        [HttpPost("CreateCard")]
+        public async Task<ActionResult<Card>> CreateCard(Card card)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (card.ExpirationDate <= DateTime.UtcNow)
+            {
+                return BadRequest("Expiration date must be in the future.");
+            }
+
+            _context.Cards.Add(card);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetCard), new { id = card.Id }, card);
+        }
     }
 }
