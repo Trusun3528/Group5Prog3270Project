@@ -41,14 +41,14 @@ public class CartControllerTests
     [TestMethod]
     public async Task GetCart_ValidId_ReturnsOk()
     {
-        var result = await _controller.GetCarts(1);
+        var result = await _controller.GetCart(1);
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
 
     [TestMethod]
     public async Task GetCart_InvalidId_ReturnsNotFound()
     {
-        var result = await _controller.GetCarts(99);
+        var result = await _controller.GetCart(99);
         Assert.IsInstanceOfType(result.Result, typeof(NotFoundObjectResult));
     }
 
