@@ -124,7 +124,18 @@ public class CartControllerTests
     [TestMethod]
     public async Task GetCartItems_ValidId_ReturnsOk()
     {
+        
+        var cartItem1 = new CartItem { Id = 1, CartID = 1, ProductID = 1, Quantity = 1, Price = 10.0 };
+        var cartItem2 = new CartItem { Id = 2, CartID = 1, ProductID = 2, Quantity = 2, Price = 20.0 };
+
+        
+        _context.CartItems.AddRange(cartItem1, cartItem2);
+        await _context.SaveChangesAsync();
+
+        
         var result = await _controller.GetCartItems(1);
+
+       
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
     }
 
