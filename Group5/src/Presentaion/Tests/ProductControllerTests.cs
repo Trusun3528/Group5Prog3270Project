@@ -40,6 +40,7 @@ public class ProductControllerTests
         
         _context.Products.Add(new Product { Id = 1, ProductName = "Test Product 1", Price = 10.00, ProductDescription = "Description 1", Stock = 100, CatagoryId = 1, ImageURL = "http://example.com/image1.jpg" });
         _context.Products.Add(new Product { Id = 2, ProductName = "Test Product 2", Price = 20.00, ProductDescription = "Description 2", Stock = 200, CatagoryId = 2, ImageURL = "http://example.com/image2.jpg" });
+        _context.Products.Add(new Product { Id = 3, ProductName = "Test Product 3", Price = 30.00, ProductDescription = "Description 3", Stock = 300, CatagoryId = 3, ImageURL = "http://example.com/image3.jpg" });
 
         _context.SaveChanges();
     }
@@ -111,7 +112,7 @@ public class ProductControllerTests
         var result = await _controller.GetProducts();
         Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
         var products = (result.Result as OkObjectResult).Value as List<Product>;
-        Assert.AreEqual(2, products.Count);
+        Assert.AreEqual(3, products.Count);
     }
 
     [TestMethod]
@@ -445,7 +446,7 @@ public class ProductControllerTests
     [TestMethod]
     public async Task EditProduct_ModelStateError_ReturnsBadRequest()
     {
-        // Arrange
+        
         var invalidProduct = new Product
         {
             ProductName = "", 
@@ -524,7 +525,37 @@ public class ProductControllerTests
     }
 
 
+    [TestMethod]
+    public async Task PriceRangeFilter_ValidRange_ReturnsOk()
+    {
+        var priceRange = new PriceRange { MinPrice = 10, MaxPrice = 30 };
 
+        var result = await _controller.PriceRangeFilter(priceRange);
+
+        Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
+        var products = (result.Result as OkObjectResult).Value as List<Product>;
+        Assert.AreEqual(3, products.Count);
+    }
+
+    [TestMethod]
+    public async Task PriceRangeFiltere_NoProductsInRange_ReturnsNotFound()
+    {
+        var priceRange = new PriceRange { MinPrice = 40, MaxPrice = 50 };
+
+        var result = await _controller.PriceRangeFilter(priceRange);
+
+        Assert.IsInstanceOfType(result.Result, typeof(NotFoundObjectResult));
+    }
+
+    [TestMethod]
+    public async Task PriceRangeFilter_InvalidRange_ReturnsBadRequest()
+    {
+        var priceRange = new PriceRange { MinPrice = 30, MaxPrice = 10 };
+
+        var result = await _controller.PriceRangeFilter(priceRange);
+
+        Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+    }
 
 
 

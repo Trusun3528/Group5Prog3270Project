@@ -86,8 +86,7 @@ namespace Group5.src.Presentaion.Controllers
         }
 
 
-        [HttpGet("GetCart/{id}")]
-        public async Task<ActionResult<Product>> GetCarts(int id)
+        
 
         [HttpGet("GetCart/{Id}")]
         public async Task<ActionResult<Cart>> GetCart(int id)

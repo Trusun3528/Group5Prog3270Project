@@ -298,6 +298,33 @@ namespace Group5.src.Presentaion.Controllers
             return Ok(products);
         }
 
+        [HttpPost("PriceRangeFilter")]
+        public async Task<ActionResult<IEnumerable<Product>>> PriceRangeFilter([FromBody] PriceRange priceRange)
+        {
+            _logger.LogInformation("Start of PriceRangeFilter");
+
+            //makes sure price range is ok
+            if (priceRange.MinPrice < 0 || priceRange.MaxPrice < 0 || priceRange.MinPrice > priceRange.MaxPrice)
+            {
+                _logger.LogWarning("price range no good");
+                return BadRequest("price range no good");
+            }
+
+            //filters products based on the price range the user wants
+            var products = await _context.Products
+                .Where(p => p.Price >= priceRange.MinPrice && p.Price <= priceRange.MaxPrice)
+                .ToListAsync();
+
+            //if no products are found in the price range
+            if (products == null || !products.Any())
+            {
+                _logger.LogInformation("No products found in the price range");
+                return NotFound($"No products found in the price range {priceRange.MinPrice} to {priceRange.MaxPrice}");
+            }
+
+            _logger.LogInformation("Products found");
+            return Ok(products);
+        }
 
 
 
