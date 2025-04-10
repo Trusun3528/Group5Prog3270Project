@@ -7,7 +7,7 @@ namespace Group5.src.domain.models
         public int Id { get; set; }
         public int ProductId { get; set; }
 
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
 
         [Range(1, 5)]
         public double RatingNumber { get; set; }

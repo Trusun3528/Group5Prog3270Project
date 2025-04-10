@@ -40,10 +40,8 @@ builder.Services.AddDbContext<Group5DbContext>(options =>
     options.UseSqlite("Data Source=src/infrastructure/data.db"));
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<Group5DbContext>()
-    .AddDefaultTokenProviders();
-
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<Group5DbContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -78,13 +76,12 @@ app.UseCors(MyAllowSpecificOrigins);
 
 // Add before app.UseAuthorization()
 app.UseAuthentication();
-
-
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+app.MapIdentityApi<User>();
 
 logger.LogInformation("Application has started.");
 

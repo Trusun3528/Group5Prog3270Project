@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Group5.src.domain.models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Group5.src.infrastructure
 {
-    public class Group5DbContext : DbContext
+    public class Group5DbContext : IdentityDbContext<User>
     {
         public Group5DbContext(DbContextOptions<Group5DbContext> options)
             : base(options)
@@ -13,7 +14,6 @@ namespace Group5.src.infrastructure
         {
         }
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -139,24 +139,6 @@ namespace Group5.src.infrastructure
                     Stock = 100,
                     CatagoryId = 1,
                     ImageURL = "https://urbanwoodcraft.com/wp-content/uploads/2023/07/CELINE-83%E2%80%B3-X-40%E2%80%B3-OVAL-MIRROR-BARN-DOOR.jpg"
-                });
-
-            modelBuilder.Entity<User>().HasData(//populating a user account and a admin account
-                new User
-                {
-                    Id = 1,
-                    UserName = "Austin",
-                    Email = "acameron1391@conestogac.on.ca",
-                    Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
-                    Role = "Admin"
-                },
-                new User
-                {
-                    Id = 2,
-                    UserName = "Patrick",
-                    Email = "Patrick@google.com",
-                    Password = "$2a$11$5skyn5sF5DfIjtt8DLK/nuOR7r.OKjSn9mGDkBJyrzvBaE5C4Rjf2",
-                    Role = "User"
                 });
 
             modelBuilder.Entity<Category>().HasData(
