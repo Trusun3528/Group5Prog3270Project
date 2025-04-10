@@ -29,11 +29,11 @@ public class CartControllerTests
         _controller = new CartController(_context, _logger);
 
         
-        _context.Carts.Add(new Cart { Id = 1, UserId = 1 });
-        _context.Carts.Add(new Cart { Id = 2, UserId = 2 });
+        _context.Carts.Add(new Cart { Id = 1, UserId = "1" });
+        _context.Carts.Add(new Cart { Id = 2, UserId = "2" });
         _context.Carts.AddRange(
-            new Cart { Id = 3, UserId = 1, TotalAmount = 100 },
-            new Cart { Id = 4, UserId = 2, TotalAmount = 200 }
+            new Cart { Id = 3, UserId = "1", TotalAmount = 100 },
+            new Cart { Id = 4, UserId = "2", TotalAmount = 200 }
         );
         _context.SaveChanges();
     }
@@ -59,7 +59,7 @@ public class CartControllerTests
         var newCart = new Cart
         {
             Id = 3,
-            UserId = 3,
+            UserId = "3",
             TotalAmount = 100.00m
         };
 

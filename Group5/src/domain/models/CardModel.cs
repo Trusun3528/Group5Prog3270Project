@@ -8,7 +8,7 @@ namespace Group5.src.domain.models
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
         [Required]
         [MaxLength(16)]
         public string? CreditCardNumber { get; set; }

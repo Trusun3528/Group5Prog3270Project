@@ -181,7 +181,7 @@ public class ProductControllerTests
         {
             Id = 1,
             ProductId = 1,
-            UserId = 5,
+            UserId = "5",
             RatingNumber = 4,
             Comment = "Great product!"
         };
@@ -207,7 +207,7 @@ public class ProductControllerTests
 
         _context.Ratings.AddRange(new List<Rating>
         {
-        new Rating { Id = 1, ProductId = productId, UserId = 1, RatingNumber = 5, Comment = "Excellent!" }
+        new Rating { Id = 1, ProductId = productId, UserId = "1", RatingNumber = 5, Comment = "Excellent!" }
         });
 
         await _context.SaveChangesAsync();
@@ -481,7 +481,7 @@ public class ProductControllerTests
         {
             Id = 1,
             ProductId = 10,
-            UserId = 5,
+            UserId = "5",
             RatingNumber = 6,
             Comment = "Great product!"
         };
@@ -508,7 +508,7 @@ public class ProductControllerTests
         {
             Id = 1,
             ProductId = 999,
-            UserId = 5,
+            UserId = "5",
             RatingNumber = 4,
             Comment = "Great product!"
         };
