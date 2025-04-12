@@ -9,13 +9,13 @@ namespace Group5.src.Presentaion.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CartController : Controller
+    public class AdminCartController : Controller
     {
         //private readonly CartModel _cartModel;
         private readonly Group5DbContext _context;
         private readonly ILogger<ProductController> _logger;
 
-        public CartController(Group5DbContext context, ILogger<ProductController> logger)
+        public AdminCartController(Group5DbContext context, ILogger<ProductController> logger)
         {
             _context = context;
             _logger = logger;
