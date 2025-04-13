@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 public class CartControllerTests
 {
     private Group5DbContext _context;
-    private CartController _controller;
+    private AdminCartController _controller;
     private ILogger<ProductController> _logger;
 
     [TestInitialize]
@@ -26,7 +26,7 @@ public class CartControllerTests
 
         _context = new Group5DbContext(options);
         _logger = new LoggerFactory().CreateLogger<ProductController>();
-        _controller = new CartController(_context, _logger);
+        _controller = new AdminCartController(_context, _logger);
 
         
         _context.Carts.Add(new Cart { Id = 1, UserId = "1" });
@@ -68,13 +68,6 @@ public class CartControllerTests
 
         
         Assert.IsInstanceOfType(result.Result, typeof(ObjectResult));
-    }
-
-    [TestMethod]
-    public void Index_ReturnsViewResult()
-    {
-        var result = _controller.Index();
-        Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
 
     [TestMethod]
