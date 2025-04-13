@@ -77,12 +77,45 @@ namespace Group5.src.Presentaion.Controllers
                 return Unauthorized();
             }
 
-            CartItem cartItem = new CartItem() {
-                ProductID = itemModel.ProductId,
-                Quantity = itemModel.Quantity
-            };
+            CartItem? cartItem = await _context.CartItems
+                .Where(ci => ci.CartID == cart.Id && ci.ProductID == itemModel.ProductId)
+                .FirstOrDefaultAsync();
 
-            cart.CartItems.Add(cartItem);
+            if (cartItem == null) {
+                cartItem = new CartItem() {
+                    ProductID = itemModel.ProductId,
+                    Quantity = itemModel.Quantity
+                };
+
+                cart.CartItems.Add(cartItem);
+            }
+            else {
+                cartItem.Quantity = itemModel.Quantity;
+            }
+            
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("RemoveItem/{id}")]
+        public async Task<ActionResult> RemoveItem(int id) {
+            Cart? cart = await GetUserCart();
+
+            if (cart == null) {
+                return Unauthorized();
+            }
+
+            CartItem? cartItem = await _context.CartItems
+                .Where(ci => ci.CartID == cart.Id && ci.Id == id)
+                .FirstOrDefaultAsync();
+            
+            if (cartItem == null) {
+                return NotFound();
+            }
+
+            cart.CartItems.Remove(cartItem);
             await _context.SaveChangesAsync();
 
             return Ok();
