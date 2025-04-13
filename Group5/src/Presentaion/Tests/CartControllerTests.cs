@@ -71,13 +71,6 @@ public class CartControllerTests
     }
 
     [TestMethod]
-    public void Index_ReturnsViewResult()
-    {
-        var result = _controller.Index();
-        Assert.IsInstanceOfType(result, typeof(ViewResult));
-    }
-
-    [TestMethod]
     public async Task GetCarts_ReturnsOk()
     {
         // Act

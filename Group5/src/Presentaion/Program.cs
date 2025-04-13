@@ -43,19 +43,7 @@ builder.Services.AddDbContext<Group5DbContext>(options =>
 builder.Services.AddIdentityApiEndpoints<User>()
     .AddEntityFrameworkStores<Group5DbContext>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ?? "UdqytHqwif2VWb7iKp9EC4GSt0onIyPe")),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -76,9 +64,13 @@ app.UseCors(MyAllowSpecificOrigins);
 
 // Add before app.UseAuthorization()
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapControllers();
+});
 
-app.MapControllers();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 app.MapIdentityApi<User>();

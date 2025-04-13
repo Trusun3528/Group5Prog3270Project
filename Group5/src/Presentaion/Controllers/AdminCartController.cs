@@ -20,10 +20,6 @@ namespace Group5.src.Presentaion.Controllers
             _context = context;
             _logger = logger;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
 
 
         //adds a cart
