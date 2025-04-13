@@ -24,18 +24,16 @@ namespace Group5.src.Presentaion.Controllers
             _logger = logger;
             _userManager = userManager;
         }
-        
-        [Authorize]
-        [HttpGet("GetCart")]
-        public async Task<ActionResult<List<CartItem>>> GetCart()
-        {
+
+        private async Task<Cart?> GetUserCart() {
             User? user = await _userManager.GetUserAsync(User);
 
             if (user == null) {
-                return Unauthorized();
+                return null;
             }
 
             Cart? cart = await _context.Carts
+                .Include(c => c.CartItems)
                 .Where(c => c.UserId == user.Id)
                 .FirstOrDefaultAsync();
 
@@ -48,11 +46,46 @@ namespace Group5.src.Presentaion.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            return cart;
+        }
+        
+        [Authorize]
+        [HttpGet("GetCart")]
+        public async Task<ActionResult<List<CartItem>>> GetCart()
+        {
+            Cart? cart = await GetUserCart();
+
+            if (cart == null) {
+                return Unauthorized();
+            }
+
             List<CartItem> cartItems = await _context.CartItems
                 .Where(ci => ci.CartID == cart.Id)
+                .Include(ci => ci.Product)
                 .ToListAsync();
 
             return cartItems;
+        }
+
+        [Authorize]
+        [HttpPost("AddItem")]
+        public async Task<ActionResult> AddItem([FromBody]AddCartItemModel itemModel)
+        {
+            Cart? cart = await GetUserCart();
+
+            if (cart == null) {
+                return Unauthorized();
+            }
+
+            CartItem cartItem = new CartItem() {
+                ProductID = itemModel.ProductId,
+                Quantity = itemModel.Quantity
+            };
+
+            cart.CartItems.Add(cartItem);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
