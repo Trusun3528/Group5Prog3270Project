@@ -40,24 +40,18 @@ builder.Services.AddDbContext<Group5DbContext>(options =>
     options.UseSqlite("Data Source=src/infrastructure/data.db"));
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<Group5DbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentityApiEndpoints<User>()
+    .AddEntityFrameworkStores<Group5DbContext>();
 
+builder.Services.AddAuthorization();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] ?? "UdqytHqwif2VWb7iKp9EC4GSt0onIyPe")),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -78,13 +72,18 @@ app.UseCors(MyAllowSpecificOrigins);
 
 // Add before app.UseAuthorization()
 app.UseAuthentication();
-
-
-app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.MapControllers();
+});
+
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+app.MapIdentityApi<User>();
 
 logger.LogInformation("Application has started.");
 

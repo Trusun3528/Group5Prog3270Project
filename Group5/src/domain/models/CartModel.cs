@@ -8,7 +8,7 @@ namespace Group5.src.domain.models
         [Key]
         public int Id { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public string? UserId { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
