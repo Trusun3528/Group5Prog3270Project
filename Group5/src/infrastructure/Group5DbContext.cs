@@ -23,6 +23,8 @@ namespace Group5.src.infrastructure
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<WishListItem> WishListItems { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
