@@ -3,6 +3,7 @@ using System;
 using Group5.src.infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-    partial class Group5DbContextModelSnapshot : ModelSnapshot
+    [Migration("20250415014654_Wishlist")]
+    partial class Wishlist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -65,16 +68,11 @@ namespace Group5.Migrations
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("GuestId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
 
                     b.HasIndex("UserId");
 
@@ -87,9 +85,6 @@ namespace Group5.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("GuestId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -98,8 +93,6 @@ namespace Group5.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
 
                     b.HasIndex("UserId");
 
@@ -244,40 +237,10 @@ namespace Group5.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Group5.src.domain.models.Guest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("addressId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Guest");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Role = "Guest",
-                            addressId = 0
-                        });
-                });
-
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GuestId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("OrderDate")
@@ -295,8 +258,6 @@ namespace Group5.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
 
                     b.HasIndex("UserId");
 
@@ -736,10 +697,6 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Cards")
-                        .HasForeignKey("GuestId");
-
                     b.HasOne("Group5.src.domain.models.User", null)
                         .WithMany("Cards")
                         .HasForeignKey("UserId")
@@ -749,10 +706,6 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Carts")
-                        .HasForeignKey("GuestId");
-
                     b.HasOne("Group5.src.domain.models.User", "User")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
@@ -783,10 +736,6 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("GuestId");
-
                     b.HasOne("Group5.src.domain.models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -880,15 +829,6 @@ namespace Group5.Migrations
             modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
                 {
                     b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("Group5.src.domain.models.Guest", b =>
-                {
-                    b.Navigation("Cards");
-
-                    b.Navigation("Carts");
-
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>

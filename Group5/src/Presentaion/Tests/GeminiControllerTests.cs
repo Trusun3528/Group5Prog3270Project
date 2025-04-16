@@ -5,6 +5,7 @@ using Group5.src.Presentaion.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +15,29 @@ public class GeminiControllerTests
 {
     private Group5DbContext _dbContext;
     private GeminiController _controller;
+    private Mock<ISession> _mockSession;
 
     [TestInitialize]
-    public void Setup()
+     public void Setup()
     {
         var options = new DbContextOptionsBuilder<Group5DbContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase")
             .Options;
         _dbContext = new Group5DbContext(options);
-        _controller = new GeminiController(_dbContext);
+
+        // Mock the session
+        _mockSession = new Mock<ISession>();
+        var mockHttpContext = new Mock<HttpContext>();
+        mockHttpContext.Setup(ctx => ctx.Session).Returns(_mockSession.Object);
+
+        // Initialize the controller with the mocked HttpContext
+        _controller = new GeminiController(_dbContext)
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = mockHttpContext.Object
+            }
+        };
     }
 
     [TestMethod]
@@ -75,5 +90,16 @@ public class GeminiControllerTests
         var objectResult = result as ObjectResult;
         Assert.AreEqual(500, objectResult.StatusCode);
         Assert.IsTrue(objectResult.Value.ToString().Contains("Internal server error"));
+    }
+
+    [TestMethod]
+    public void ClearSession_ClearsOK()
+    { 
+        _mockSession.Setup(s => s.Clear());
+
+        var result = _controller.ClearSession();
+
+        _mockSession.Verify(s => s.Clear(), Times.Once);
+        Assert.IsInstanceOfType(result, typeof(OkResult));
     }
 }
