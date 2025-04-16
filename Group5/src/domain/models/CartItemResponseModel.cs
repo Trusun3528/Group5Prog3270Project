@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Group5.src.domain.models
 {
-    public class CartItem
+    public class CartItemResponse
     {
-        public int ProductId { get; set; }
+        public Product? Product { get; set; }
         public int Quantity { get; set; }
     }
 }

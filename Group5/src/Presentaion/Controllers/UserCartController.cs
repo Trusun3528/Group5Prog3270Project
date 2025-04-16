@@ -14,110 +14,78 @@ namespace Group5.src.Presentaion.Controllers
     public class UserCartController : Controller
     {
         //private readonly CartModel _cartModel;
-        private readonly Group5DbContext _context;
         private readonly ILogger<ProductController> _logger;
-        private readonly UserManager<User> _userManager;
+        private readonly Group5DbContext _context;
 
-        public UserCartController(Group5DbContext context, ILogger<ProductController> logger, UserManager<User> userManager)
+        public UserCartController(Group5DbContext context, ILogger<ProductController> logger)
         {
             _context = context;
             _logger = logger;
-            _userManager = userManager;
         }
 
-        private async Task<Cart?> GetUserCart() {
-            User? user = await _userManager.GetUserAsync(User);
-
-            if (user == null) {
-                return null;
-            }
-
-            Cart? cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .Where(c => c.UserId == user.Id)
-                .FirstOrDefaultAsync();
+        private Cart GetUserCart() {
+            Cart? cart = HttpContext.Session.GetObject<Cart>("Cart");
 
             if (cart == null) {
-                cart = new Cart() {
-                    UserId = user.Id
-                };
-
-                _context.Carts.Add(cart);
-                await _context.SaveChangesAsync();
+                cart = new Cart();
+                SetUserCart(cart);
             }
 
             return cart;
         }
+
+        private void SetUserCart(Cart cart) {
+            HttpContext.Session.SetObject("Cart", cart);
+        }
         
         [Authorize]
         [HttpGet("GetCart")]
-        public async Task<ActionResult<List<CartItem>>> GetCart()
+        public async Task<ActionResult<List<CartItemResponse>>> GetCart()
         {
-            Cart? cart = await GetUserCart();
+            Cart cart = GetUserCart();
+            List<CartItemResponse> cartItemResponses = [];
 
-            if (cart == null) {
-                return Unauthorized();
+            foreach (CartItem item in cart.Items) {
+                cartItemResponses.Add(new CartItemResponse() {
+                    Product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId),
+                    Quantity = item.Quantity
+                });
             }
 
-            List<CartItem> cartItems = await _context.CartItems
-                .Where(ci => ci.CartID == cart.Id)
-                .Include(ci => ci.Product)
-                .ToListAsync();
-
-            return cartItems;
+            return cartItemResponses;
         }
 
         [Authorize]
         [HttpPost("AddItem")]
-        public async Task<ActionResult> AddItem([FromBody]AddCartItemModel itemModel)
+        public ActionResult AddItem([FromBody]CartItem newItem)
         {
-            Cart? cart = await GetUserCart();
+            Cart cart = GetUserCart();
+            CartItem? item = cart.Items.Find(item => item.ProductId == newItem.ProductId);
 
-            if (cart == null) {
-                return Unauthorized();
-            }
-
-            CartItem? cartItem = await _context.CartItems
-                .Where(ci => ci.CartID == cart.Id && ci.ProductID == itemModel.ProductId)
-                .FirstOrDefaultAsync();
-
-            if (cartItem == null) {
-                cartItem = new CartItem() {
-                    ProductID = itemModel.ProductId,
-                    Quantity = itemModel.Quantity
-                };
-
-                cart.CartItems.Add(cartItem);
+            if (item == null) {
+                cart.Items.Add(newItem);
             }
             else {
-                cartItem.Quantity = itemModel.Quantity;
+                item.Quantity = item.Quantity;
             }
-            
-            await _context.SaveChangesAsync();
 
+            SetUserCart(cart);
             return Ok();
         }
 
         [Authorize]
         [HttpDelete("RemoveItem/{id}")]
-        public async Task<ActionResult> RemoveItem(int id) {
-            Cart? cart = await GetUserCart();
-
-            if (cart == null) {
-                return Unauthorized();
-            }
-
-            CartItem? cartItem = await _context.CartItems
-                .Where(ci => ci.CartID == cart.Id && ci.Id == id)
-                .FirstOrDefaultAsync();
+        public ActionResult RemoveItem(int id) {
+            Cart cart = GetUserCart();
+            CartItem? item = cart.Items.Find(item => item.ProductId == id);
             
-            if (cartItem == null) {
+            if (item == null) {
                 return NotFound();
             }
 
-            cart.CartItems.Remove(cartItem);
-            await _context.SaveChangesAsync();
+            cart.Items.Remove(item);
 
+            SetUserCart(cart);
             return Ok();
         }
     }

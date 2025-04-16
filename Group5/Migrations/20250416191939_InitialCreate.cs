@@ -248,26 +248,6 @@ namespace Group5.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Carts_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -290,28 +270,20 @@ namespace Group5.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
+                name: "WishListItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CartID = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductID = table.Column<int>(type: "INTEGER", nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    Price = table.Column<double>(type: "decimal(18,2)", nullable: true)
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItems", x => x.Id);
+                    table.PrimaryKey("PK_WishListItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItems_Carts_CartID",
-                        column: x => x.CartID,
-                        principalTable: "Carts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CartItems_Products_ProductID",
-                        column: x => x.ProductID,
+                        name: "FK_WishListItems_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -429,21 +401,6 @@ namespace Group5.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItems_CartID",
-                table: "CartItems",
-                column: "CartID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductID",
-                table: "CartItems",
-                column: "ProductID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_UserId",
-                table: "Carts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -457,6 +414,11 @@ namespace Group5.Migrations
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WishListItems_ProductId",
+                table: "WishListItems",
+                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -484,9 +446,6 @@ namespace Group5.Migrations
                 name: "Cards");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
@@ -496,10 +455,10 @@ namespace Group5.Migrations
                 name: "Ratings");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "WishListItems");
 
             migrationBuilder.DropTable(
-                name: "Carts");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Orders");

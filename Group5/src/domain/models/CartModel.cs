@@ -2,6 +2,6 @@
 {
     public class Cart
     {
-        public List<CartItem> Items;
+        public List<CartItem> Items { get; set; } = [];
     }
 }
