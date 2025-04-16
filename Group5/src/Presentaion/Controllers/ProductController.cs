@@ -269,7 +269,7 @@ namespace Group5.src.Presentaion.Controllers
 
             //Find the category by name
             var category = await _context.Categories
-                .FirstOrDefaultAsync(c => c.CategoryName == categoryName);
+                .FirstOrDefaultAsync(c => c.CategoryName.ToLower() == categoryName.ToLower());
 
             //Check if category exists
             if (category == null)
