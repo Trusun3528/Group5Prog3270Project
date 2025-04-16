@@ -234,6 +234,13 @@ namespace Group5.src.infrastructure
                 }
             );
 
+            modelBuilder.Entity<Guest>().HasData(
+                new Guest
+                {
+                    Id = 1,
+                    Role = "Guest"
+                });
+
         }
         public virtual DbSet<Card> GetCards() => Cards;
     }

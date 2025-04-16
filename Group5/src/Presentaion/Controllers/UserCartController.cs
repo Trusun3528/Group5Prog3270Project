@@ -88,5 +88,109 @@ namespace Group5.src.Presentaion.Controllers
             SetUserCart(cart);
             return Ok();
         }
+
+        [Authorize]
+        [HttpPost("Checkout")]
+        public async Task<ActionResult> Checkout()
+        {
+            try
+            {
+                _logger.LogInformation("Checkout process started.");
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    _logger.LogWarning("User not found.");
+                    return Unauthorized();
+                }
+
+                var cart = await _context.Carts
+                    .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
+                    .FirstOrDefaultAsync(c => c.UserId == user.Id);
+
+                if (cart == null || !cart.CartItems.Any())
+                {
+                    _logger.LogWarning("Cart is empty.");
+                    return BadRequest("Cart is empty.");
+                }
+
+                var order = new Order
+                {
+                    UserId = user.Id,
+                    OrderDate = DateTime.UtcNow,
+                    OrderItems = new List<OrderItem>()
+                };
+
+                var cartItemsForResponse = new List<object>();
+                decimal totalAmount = 0;
+
+                foreach (var item in cart.CartItems)
+                {
+                    if (item.Product == null)
+                    {
+                        _logger.LogWarning($"Product not found for cart item with ID {item.Id}.");
+                        return BadRequest($"Product not found for cart item with ID {item.Id}.");
+                    }
+
+                    if (item.Product.Stock < item.Quantity)
+                    {
+                        _logger.LogWarning($"Insufficient stock for product with ID {item.ProductID}.");
+                        return BadRequest($"Sorry, we can't process your order. Insufficient stock for product: {item.Product.ProductName}.");
+                    }
+
+                    var price = (decimal)item.Product.Price;
+                    var discountedPrice = CalculateDiscountedPrice(price);
+
+                    order.OrderItems.Add(new OrderItem
+                    {
+                        ProductId = item.ProductID,
+                        Quantity = item.Quantity,
+                        Price = discountedPrice
+                    });
+
+                    totalAmount += discountedPrice * item.Quantity;
+
+                    // Update stock
+                    item.Product.Stock -= item.Quantity;
+
+                    // Add formatted cart item for frontend
+                    cartItemsForResponse.Add(new
+                    {
+                        id = item.Id,
+                        quantity = item.Quantity,
+                        price = discountedPrice,
+                        product = new
+                        {
+                            name = item.Product.ProductName
+                        }
+                    });
+                }
+
+                _context.Orders.Add(order);
+                _context.CartItems.RemoveRange(cart.CartItems);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Checkout process completed successfully.");
+
+                return Ok(new
+                {
+                    orderId = order.Id,
+                    totalAmount = totalAmount,
+                    cartItems = cartItemsForResponse
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during checkout process.");
+                return StatusCode(500, "An error occurred during the checkout process.");
+            }
+        }
+
+        private decimal CalculateDiscountedPrice(decimal price)
+        {
+            // Example discount logic
+            return price * 0.9m;
+        }
     }
 }
