@@ -16,15 +16,17 @@ namespace Group5.src.Presentaion.Controllers
         //private readonly CartModel _cartModel;
         private readonly ILogger<ProductController> _logger;
         private readonly Group5DbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserCartController(Group5DbContext context, ILogger<ProductController> logger)
+        public UserCartController(Group5DbContext context, ILogger<ProductController> logger, UserManager<User> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         private Cart GetUserCart() {
-            Cart? cart = HttpContext.Session.GetObject<Cart>("Cart");
+            Cart? cart = HttpContext.Session.GetObject<Cart?>("Cart");
 
             if (cart == null) {
                 cart = new Cart();
@@ -34,11 +36,10 @@ namespace Group5.src.Presentaion.Controllers
             return cart;
         }
 
-        private void SetUserCart(Cart cart) {
+        private void SetUserCart(Cart? cart) {
             HttpContext.Session.SetObject("Cart", cart);
         }
         
-        [Authorize]
         [HttpGet("GetCart")]
         public async Task<ActionResult<List<CartItemResponse>>> GetCart()
         {
@@ -55,7 +56,6 @@ namespace Group5.src.Presentaion.Controllers
             return cartItemResponses;
         }
 
-        [Authorize]
         [HttpPost("AddItem")]
         public ActionResult AddItem([FromBody]CartItem newItem)
         {
@@ -73,7 +73,6 @@ namespace Group5.src.Presentaion.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpDelete("RemoveItem/{id}")]
         public ActionResult RemoveItem(int id) {
             Cart cart = GetUserCart();
@@ -89,7 +88,6 @@ namespace Group5.src.Presentaion.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpPost("Checkout")]
         public async Task<ActionResult> Checkout()
         {
@@ -97,27 +95,19 @@ namespace Group5.src.Presentaion.Controllers
             {
                 _logger.LogInformation("Checkout process started.");
 
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
-                    _logger.LogWarning("User not found.");
-                    return Unauthorized();
-                }
+                var cart = GetUserCart();
 
-                var cart = await _context.Carts
-                    .Include(c => c.CartItems)
-                    .ThenInclude(ci => ci.Product)
-                    .FirstOrDefaultAsync(c => c.UserId == user.Id);
-
-                if (cart == null || !cart.CartItems.Any())
+                if (cart == null || !cart.Items.Any())
                 {
                     _logger.LogWarning("Cart is empty.");
                     return BadRequest("Cart is empty.");
                 }
 
+                User? user = await _userManager.GetUserAsync(User);
+
                 var order = new Order
                 {
-                    UserId = user.Id,
+                    UserId = user?.Id,
                     OrderDate = DateTime.UtcNow,
                     OrderItems = new List<OrderItem>()
                 };
@@ -125,26 +115,32 @@ namespace Group5.src.Presentaion.Controllers
                 var cartItemsForResponse = new List<object>();
                 decimal totalAmount = 0;
 
-                foreach (var item in cart.CartItems)
+                foreach (var item in cart.Items)
                 {
-                    if (item.Product == null)
-                    {
-                        _logger.LogWarning($"Product not found for cart item with ID {item.Id}.");
-                        return BadRequest($"Product not found for cart item with ID {item.Id}.");
+                    var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
+
+                    if (product == null) {
+                        return BadRequest();
                     }
 
-                    if (item.Product.Stock < item.Quantity)
+                    if (product == null)
                     {
-                        _logger.LogWarning($"Insufficient stock for product with ID {item.ProductID}.");
-                        return BadRequest($"Sorry, we can't process your order. Insufficient stock for product: {item.Product.ProductName}.");
+                        _logger.LogWarning($"Product not found for cart item with ID {item.ProductId}.");
+                        return BadRequest($"Product not found for cart item with ID {item.ProductId}.");
                     }
 
-                    var price = (decimal)item.Product.Price;
+                    if (product.Stock < item.Quantity)
+                    {
+                        _logger.LogWarning($"Insufficient stock for product with ID {item.ProductId}.");
+                        return BadRequest($"Sorry, we can't process your order. Insufficient stock for product: {product.ProductName}.");
+                    }
+
+                    var price = (decimal)product.Price;
                     var discountedPrice = CalculateDiscountedPrice(price);
 
                     order.OrderItems.Add(new OrderItem
                     {
-                        ProductId = item.ProductID,
+                        ProductId = item.ProductId,
                         Quantity = item.Quantity,
                         Price = discountedPrice
                     });
@@ -152,24 +148,25 @@ namespace Group5.src.Presentaion.Controllers
                     totalAmount += discountedPrice * item.Quantity;
 
                     // Update stock
-                    item.Product.Stock -= item.Quantity;
+                    product.Stock -= item.Quantity;
 
                     // Add formatted cart item for frontend
                     cartItemsForResponse.Add(new
                     {
-                        id = item.Id,
+                        id = item.ProductId,
                         quantity = item.Quantity,
                         price = discountedPrice,
                         product = new
                         {
-                            name = item.Product.ProductName
+                            name = product.ProductName
                         }
                     });
                 }
 
                 _context.Orders.Add(order);
-                _context.CartItems.RemoveRange(cart.CartItems);
                 await _context.SaveChangesAsync();
+
+                SetUserCart(null);
 
                 _logger.LogInformation("Checkout process completed successfully.");
 

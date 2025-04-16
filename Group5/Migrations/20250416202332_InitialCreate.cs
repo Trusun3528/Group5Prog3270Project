@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Group5.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -82,20 +82,6 @@ namespace Group5.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Guest",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Role = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    addressId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Guest", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -248,8 +234,7 @@ namespace Group5.Migrations
                     UserId = table.Column<string>(type: "TEXT", nullable: false),
                     CreditCardNumber = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
                     ExpirationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CVV = table.Column<string>(type: "TEXT", maxLength: 3, nullable: false),
-                    GuestId = table.Column<int>(type: "INTEGER", nullable: true)
+                    CVV = table.Column<string>(type: "TEXT", maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -260,53 +245,18 @@ namespace Group5.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Cards_Guest_GuestId",
-                        column: x => x.GuestId,
-                        principalTable: "Guest",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.cs
-========
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    GuestId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Carts_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Carts_Guest_GuestId",
-                        column: x => x.GuestId,
-                        principalTable: "Guest",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.cs
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<string>(type: "TEXT", nullable: false),
+                    UserId = table.Column<string>(type: "TEXT", nullable: true),
                     OrderDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ShippingAddress = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    GuestId = table.Column<int>(type: "INTEGER", nullable: true)
+                    ShippingAddress = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -315,12 +265,6 @@ namespace Group5.Migrations
                         name: "FK_Orders_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orders_Guest_GuestId",
-                        column: x => x.GuestId,
-                        principalTable: "Guest",
                         principalColumn: "Id");
                 });
 
@@ -395,11 +339,6 @@ namespace Group5.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Guest",
-                columns: new[] { "Id", "Role", "addressId" },
-                values: new object[] { 1, "Guest", 0 });
-
-            migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "CatagoryId", "ImageURL", "Price", "ProductDescription", "ProductName", "Rating", "Stock" },
                 values: new object[,]
@@ -456,39 +395,11 @@ namespace Group5.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cards_GuestId",
-                table: "Cards",
-                column: "GuestId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cards_UserId",
                 table: "Cards",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.cs
-========
-                name: "IX_CartItems_CartID",
-                table: "CartItems",
-                column: "CartID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartItems_ProductID",
-                table: "CartItems",
-                column: "ProductID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_GuestId",
-                table: "Carts",
-                column: "GuestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Carts_UserId",
-                table: "Carts",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.cs
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -497,11 +408,6 @@ namespace Group5.Migrations
                 name: "IX_OrderItems_ProductId",
                 table: "OrderItems",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_GuestId",
-                table: "Orders",
-                column: "GuestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -561,9 +467,6 @@ namespace Group5.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Guest");
         }
     }
 }

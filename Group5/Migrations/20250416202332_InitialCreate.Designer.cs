@@ -11,13 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Group5.Migrations
 {
     [DbContext(typeof(Group5DbContext))]
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.Designer.cs
-    [Migration("20250416191939_InitialCreate")]
+    [Migration("20250416202332_InitialCreate")]
     partial class InitialCreate
-========
-    [Migration("20250416170109_initial")]
-    partial class initial
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,77 +68,17 @@ namespace Group5.Migrations
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("GuestId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Cards");
                 });
 
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.Designer.cs
-========
-            modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GuestId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("Group5.src.domain.models.CartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CartID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartID");
-
-                    b.HasIndex("ProductID");
-
-                    b.ToTable("CartItems");
-                });
-
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.Designer.cs
             modelBuilder.Entity("Group5.src.domain.models.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -255,40 +190,10 @@ namespace Group5.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Group5.src.domain.models.Guest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("addressId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Guest");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Role = "Guest",
-                            addressId = 0
-                        });
-                });
-
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("GuestId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("OrderDate")
@@ -302,12 +207,9 @@ namespace Group5.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
 
                     b.HasIndex("UserId");
 
@@ -747,10 +649,6 @@ namespace Group5.Migrations
 
             modelBuilder.Entity("Group5.src.domain.models.Card", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Cards")
-                        .HasForeignKey("GuestId");
-
                     b.HasOne("Group5.src.domain.models.User", null)
                         .WithMany("Cards")
                         .HasForeignKey("UserId")
@@ -758,54 +656,11 @@ namespace Group5.Migrations
                         .IsRequired();
                 });
 
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.Designer.cs
-========
-            modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
-                {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Carts")
-                        .HasForeignKey("GuestId");
-
-                    b.HasOne("Group5.src.domain.models.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Group5.src.domain.models.CartItem", b =>
-                {
-                    b.HasOne("Group5.src.domain.models.Cart", "Cart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Group5.src.domain.models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("Product");
-                });
-
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.Designer.cs
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
-                    b.HasOne("Group5.src.domain.models.Guest", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("GuestId");
-
                     b.HasOne("Group5.src.domain.models.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -891,23 +746,6 @@ namespace Group5.Migrations
                         .IsRequired();
                 });
 
-<<<<<<<< HEAD:Group5/Migrations/20250416191939_InitialCreate.Designer.cs
-========
-            modelBuilder.Entity("Group5.src.domain.models.Cart", b =>
-                {
-                    b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("Group5.src.domain.models.Guest", b =>
-                {
-                    b.Navigation("Cards");
-
-                    b.Navigation("Carts");
-
-                    b.Navigation("Orders");
-                });
-
->>>>>>>> 024f501a53082d9495e001eaf51a61d86cba5bfa:Group5/Migrations/20250416170109_initial.Designer.cs
             modelBuilder.Entity("Group5.src.domain.models.Order", b =>
                 {
                     b.Navigation("OrderItems");
