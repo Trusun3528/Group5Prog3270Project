@@ -201,7 +201,6 @@ namespace Group5.src.Presentaion.Controllers
 
         private decimal CalculateDiscountedPrice(decimal price)
         {
-            // Example discount logic
             return price * 0.9m;
         }
     }
