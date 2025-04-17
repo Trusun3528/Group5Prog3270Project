@@ -119,10 +119,6 @@ namespace Group5.src.Presentaion.Controllers
                 {
                     var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
 
-                    if (product == null) {
-                        return BadRequest();
-                    }
-
                     if (product == null)
                     {
                         _logger.LogWarning($"Product not found for cart item with ID {item.ProductId}.");
@@ -147,10 +143,10 @@ namespace Group5.src.Presentaion.Controllers
 
                     totalAmount += discountedPrice * item.Quantity;
 
-                    // Update stock
+                    //update stock
                     product.Stock -= item.Quantity;
 
-                    // Add formatted cart item for frontend
+                    //make this the item format
                     cartItemsForResponse.Add(new
                     {
                         id = item.ProductId,
@@ -165,8 +161,6 @@ namespace Group5.src.Presentaion.Controllers
 
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
-
-                SetUserCart(null);
 
                 _logger.LogInformation("Checkout process completed successfully.");
 
