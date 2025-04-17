@@ -26,7 +26,11 @@ namespace Group5.src.Presentaion.Controllers
         public async Task<ActionResult<IEnumerable<Product>>> GetOrders()
         {
             _logger.LogInformation("Entering GetOrders");
-            var orders = await _context.Orders.ToListAsync();
+            var orders = await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(o => o.Product)
+                .ToListAsync();
             _logger.LogInformation("Got Orders");
             return Ok(orders);
         }
