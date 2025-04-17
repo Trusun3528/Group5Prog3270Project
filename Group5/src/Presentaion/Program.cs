@@ -71,10 +71,11 @@ app.UseCors(MyAllowSpecificOrigins);
 
 
 // Add before app.UseAuthorization()
+app.UseSession();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
-app.UseSession();
+
 app.MapControllers();
 app.UseEndpoints(endpoints =>
 {
