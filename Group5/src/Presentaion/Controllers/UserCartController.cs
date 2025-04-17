@@ -88,6 +88,21 @@ namespace Group5.src.Presentaion.Controllers
             return Ok();
         }
 
+        [HttpGet("GetCurrentUser")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            return Ok(new
+            {
+                user.Id,
+                user.UserName                
+            });
+        }
+
+
         [HttpPost("Checkout")]
         public async Task<ActionResult> Checkout()
         {
