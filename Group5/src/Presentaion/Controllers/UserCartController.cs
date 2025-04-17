@@ -66,7 +66,7 @@ namespace Group5.src.Presentaion.Controllers
                 cart.Items.Add(newItem);
             }
             else {
-                item.Quantity = item.Quantity;
+                item.Quantity = newItem.Quantity;
             }
 
             SetUserCart(cart);
